@@ -1,0 +1,464 @@
+{
+  "@@locale": "en",
+  "appTitle": "OBS Pad",
+  "ok": "OK",
+  "cancel": "Cancel",
+  "save": "Save",
+  "delete": "Delete",
+  "edit": "Edit",
+  "retry": "Try again",
+  "close": "Close",
+  "next": "Next",
+  "back": "Back",
+  "done": "Done",
+  "details": "Technical details",
+  "add": "Add",
+  "navPad": "Buttons",
+  "navMixer": "Mixer",
+  "navSounds": "Sounds",
+  "navMetrics": "Metrics",
+  "menuProfiles": "Saved computers",
+  "menuRemote": "Access from outside home",
+  "menuSettings": "Settings",
+  "menuGuide": "Setup guide",
+  "stepOf": "Step {current} of {total}",
+  "@stepOf": {
+    "placeholders": {
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "onbStep1Title": "Open OBS on your computer",
+  "onbStep1Body": "Use OBS Studio version 28 or newer. It already includes everything OBS Pad needs — nothing else to install on the PC.",
+  "onbStep1Hint": "Not sure about the version? In OBS, click Help > About.",
+  "onbStep2Title": "Turn on OBS remote control",
+  "onbStep2a": "In OBS, click the Tools menu",
+  "onbStep2b": "Choose WebSocket Server Settings",
+  "onbStep2c": "Check \"Enable WebSocket server\"",
+  "onbStep2d": "Check \"Enable Authentication\" and create a password",
+  "onbStep2e": "Keep port 4455 and click OK",
+  "onbStep2Hint": "Tip: the \"Show Connect Info\" button shows the PC IP and the password.",
+  "onbStep3Title": "Same Wi-Fi network",
+  "onbStep3Body": "Your PC and your phone must be on the same Wi-Fi network (the same router). Mobile data will not work here.",
+  "onbFindIp": "How to find the PC IP address",
+  "onbIpWindows": "Windows: press Windows + R, type cmd and press Enter. In the black window type ipconfig and press Enter. Look for \"IPv4 Address\" (e.g. 192.168.0.15).",
+  "onbIpMac": "Mac: open System Settings > Network, click your Wi-Fi connection and look for \"IP Address\".",
+  "onbIpLinux": "Linux: open a terminal and run hostname -I.",
+  "onbStep4Title": "Test the connection",
+  "onbStep4Body": "Type the details you saw in OBS and tap the button.",
+  "fieldProfileName": "Name for this computer",
+  "defaultProfileName": "My PC",
+  "fieldHost": "Computer IP",
+  "fieldHostHint": "e.g. 192.168.0.15",
+  "fieldPort": "Port",
+  "fieldPassword": "WebSocket password",
+  "fieldPasswordHint": "Leave empty if you did not enable authentication",
+  "showPassword": "Show password",
+  "testConnection": "Test connection",
+  "testing": "Testing…",
+  "testSuccess": "All set! Connected to OBS {version}.",
+  "@testSuccess": {
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+  "testOldObs": "OBS {version} is old. Some features may not work; update to 28 or newer.",
+  "@testOldObs": {
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+  "onbSoundTipTitle": "Tip about sounds",
+  "onbSoundTip": "A sound only reaches the live if its source is in the scene that is on air. When adding sounds with OBS Pad, keep \"Add to every scene\" checked — or put your sounds in one scene and add that scene as a source in the others.",
+  "errHostEmpty": "Type the computer IP",
+  "errHostScheme": "Type only the IP, without ws://",
+  "errHostPort": "Put the port in the Port field, not next to the IP",
+  "errHostInvalid": "This IP does not look right. Example: 192.168.0.15",
+  "errPort": "Invalid port (usually 4455)",
+  "errNameEmpty": "Give it a name",
+  "failWrongPasswordTitle": "Wrong password",
+  "failWrongPasswordHint": "The password does not match the one in OBS. Check it in Tools > WebSocket Server Settings > Show Connect Info.",
+  "failServerOffTitle": "OBS did not answer",
+  "failServerOffHint": "The computer was found, but the WebSocket server seems off. Open OBS and check that \"Enable WebSocket server\" is on and the port is 4455.",
+  "failTimeoutTitle": "Could not reach the computer",
+  "failTimeoutHint": "Check that the IP is right and both are on the same Wi-Fi. On Windows, the Firewall may be blocking port 4455.",
+  "failUnreachableTitle": "Different network",
+  "failUnreachableHint": "The phone cannot see this address. Make sure it is on the same Wi-Fi as the PC (not on mobile data).",
+  "failInvalidAddressTitle": "Invalid address",
+  "failInvalidAddressHint": "I could not find this address. Type the IP like 192.168.0.15.",
+  "failNotObsTitle": "This does not look like OBS",
+  "failNotObsHint": "Something answered on this port, but it is not OBS WebSocket. Check the port (default 4455).",
+  "failUnsupportedTitle": "OBS is too old",
+  "failUnsupportedHint": "Update to OBS 28 or newer.",
+  "failNotConnectedTitle": "Not connected to OBS",
+  "failNotConnectedHint": "Wait for it to reconnect or tap Try now.",
+  "failNotFoundNamed": "\"{name}\" was not found in OBS",
+  "@failNotFoundNamed": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "failNotFound": "Item not found in OBS",
+  "failNotFoundHint": "It may have been renamed or deleted in OBS. Edit the button and pick it again.",
+  "failAlreadyExists": "Something with this name already exists in OBS.",
+  "failOutputActive": "It is already running.",
+  "failOutputNotActive": "It is not running.",
+  "failOutputDisabledTitle": "Feature turned off in OBS",
+  "failOutputDisabledHint": "Turn it on in OBS Settings > Output (e.g. Replay Buffer).",
+  "failInvalidStateNamed": "OBS cannot do this with \"{name}\" right now.",
+  "@failInvalidStateNamed": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "failInvalidState": "OBS cannot do this right now.",
+  "failInvalidInputKind": "Your OBS does not have this kind of source.",
+  "failRequestFailed": "OBS could not do this.",
+  "failUnknown": "Something went wrong.",
+  "firewallHelpTitle": "How to allow OBS in the Windows Firewall",
+  "firewallHelpBody": "Open Start and search for \"Allow an app through Windows Firewall\". Click \"Change settings\", find \"OBS Studio\" and check \"Private\". If it is not listed, click \"Allow another app\" and choose obs64.exe. Also make sure your Wi-Fi is set as a Private network.",
+  "statusConnecting": "Connecting to OBS…",
+  "statusReconnecting": "Connection lost. Trying again in {seconds}s (attempt {attempt})",
+  "@statusReconnecting": {
+    "placeholders": {
+      "seconds": {
+        "type": "int"
+      },
+      "attempt": {
+        "type": "int"
+      }
+    }
+  },
+  "statusFailed": "Could not connect: {reason}",
+  "@statusFailed": {
+    "placeholders": {
+      "reason": {
+        "type": "String"
+      }
+    }
+  },
+  "statusDisconnected": "Not connected to OBS",
+  "statusConnected": "Connected",
+  "tryNow": "Try now",
+  "connect": "Connect",
+  "disconnect": "Disconnect",
+  "profilesTitle": "Saved computers",
+  "profilesEmpty": "No computer saved yet.",
+  "addProfile": "Add computer",
+  "editProfile": "Edit computer",
+  "deleteProfileConfirm": "Delete \"{name}\"?",
+  "@deleteProfileConfirm": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "profileInUse": "In use",
+  "saveWithoutTest": "Save without testing",
+  "testAndSave": "Test and save",
+  "scenesTitle": "Scenes",
+  "scenesEmpty": "No scenes found in OBS.",
+  "onAir": "On air",
+  "sceneSwitched": "Scene: {name}",
+  "@sceneSwitched": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "remoteTitle": "Access from outside home",
+  "remoteIntro": "Want to control OBS when your phone is not on the same Wi-Fi (e.g. on 4G)? Use a free private network app (VPN) like Tailscale or NetBird. It connects your phone and PC safely, as if they were at home.",
+  "remoteWarningTitle": "Never open port 4455 on your router",
+  "remoteWarning": "Do NOT use \"port forwarding\" to expose port 4455 to the internet. Anyone could try to guess your password and take control of your OBS and your live.",
+  "remoteOptionTailscale": "Option 1: Tailscale",
+  "remoteOptionNetbird": "Option 2: NetBird",
+  "remoteStep1": "Create a free account at {site}",
+  "@remoteStep1": {
+    "placeholders": {
+      "site": {
+        "type": "String"
+      }
+    }
+  },
+  "remoteStep2": "Install {app} on the PC (where OBS is) and sign in",
+  "@remoteStep2": {
+    "placeholders": {
+      "app": {
+        "type": "String"
+      }
+    }
+  },
+  "remoteStep3": "Install the {app} app on your phone and sign in with the same account",
+  "@remoteStep3": {
+    "placeholders": {
+      "app": {
+        "type": "String"
+      }
+    }
+  },
+  "remoteStep4": "On the PC, open {app} and copy its IP (it starts with 100.)",
+  "@remoteStep4": {
+    "placeholders": {
+      "app": {
+        "type": "String"
+      }
+    }
+  },
+  "remoteStep5": "In OBS Pad, add a new computer using that 100.x.x.x IP, with the same port and password",
+  "remoteFootnote": "Keep the VPN turned on in both the PC and the phone while you use it.",
+  "remoteAddProfile": "Add computer with VPN IP",
+  "settingsTitle": "Settings",
+  "settingsTheme": "Theme",
+  "themeSystem": "Same as phone",
+  "themeLight": "Light",
+  "themeDark": "Dark",
+  "settingsLanguage": "Language",
+  "languageSystem": "Same as phone",
+  "settingsKeepScreenOn": "Keep screen on",
+  "settingsKeepScreenOnHint": "The phone screen will not turn off while OBS Pad is open.",
+  "settingsHaptics": "Vibrate on touch",
+  "settingsGuide": "See the setup guide again",
+  "obsMockTitle": "WebSocket Server Settings",
+  "obsMockEnableServer": "Enable WebSocket server",
+  "obsMockEnableAuth": "Enable Authentication",
+  "obsMockPort": "Server Port",
+  "actionSwitchScene": "Switch scene",
+  "actionToggleSource": "Show/hide a source",
+  "actionToggleMute": "Mute/unmute audio",
+  "actionToggleStream": "Start/stop live",
+  "actionStartStream": "Start live",
+  "actionStopStream": "Stop live",
+  "actionToggleRecord": "Start/stop recording",
+  "actionStartRecord": "Start recording",
+  "actionStopRecord": "Stop recording",
+  "actionToggleRecordPause": "Pause/resume recording",
+  "actionSaveReplay": "Save replay",
+  "actionHotkey": "OBS hotkey",
+  "actionMacro": "Macro (several actions)",
+  "addButton": "Add button",
+  "editButton": "Edit button",
+  "editButtons": "Edit buttons",
+  "doneEditing": "Done editing",
+  "editModeHint": "Hold and drag to reorder. Tap to edit.",
+  "columns": "Columns",
+  "padEmpty": "No buttons in this layout yet.",
+  "buttonIncomplete": "This button is not finished: choose what it should control.",
+  "buttonsAdded": "{count, plural, =0{No new buttons} =1{1 button added} other{{count} buttons added}}",
+  "@buttonsAdded": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "confirm": "Confirm",
+  "confirmStopLiveTitle": "Stop the live?",
+  "confirmStopLiveBody": "Your live will end for everyone watching.",
+  "layoutLive": "Live",
+  "layoutRecording": "Recording",
+  "layoutAudioOnly": "Audio only",
+  "layoutMenu": "Layouts",
+  "layoutNew": "New layout",
+  "layoutRename": "Rename layout",
+  "layoutDelete": "Delete layout",
+  "layoutDeleteConfirm": "Delete layout \"{name}\"?",
+  "@layoutDeleteConfirm": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "layoutDeleteBody": "Its buttons will be deleted too.",
+  "layoutAddSceneButtons": "Add a button for each scene",
+  "layoutAddMuteButtons": "Add a mute button for each audio",
+  "fieldName": "Name",
+  "fieldAction": "What does it do?",
+  "fieldScene": "Scene",
+  "fieldSource": "Source",
+  "fieldAudioInput": "Audio",
+  "fieldHotkey": "Hotkey name",
+  "fieldHotkeyHelp": "Pick from the list of OBS hotkeys. Hotkeys of plugins also appear there.",
+  "fieldLabel": "Label",
+  "fieldSize": "Size",
+  "fieldColor": "Color",
+  "fieldIcon": "Icon",
+  "fieldEmoji": "Emoji",
+  "noEmoji": "None",
+  "sizeSmall": "Small",
+  "sizeMedium": "Medium",
+  "sizeLarge": "Large",
+  "pickFromObs": "Pick from OBS",
+  "search": "Search",
+  "moveUp": "Move up",
+  "macroHelp": "Steps run in order. The wait happens after each step.",
+  "macroStep": "Step {number}",
+  "@macroStep": {
+    "placeholders": {
+      "number": {
+        "type": "int"
+      }
+    }
+  },
+  "macroStepCount": "{count, plural, =1{1 step} other{{count} steps}}",
+  "@macroStepCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "macroDelay": "Wait {seconds} s before the next step",
+  "@macroDelay": {
+    "placeholders": {
+      "seconds": {
+        "type": "String"
+      }
+    }
+  },
+  "macroAddStep": "Add step",
+  "badgeOnAir": "ON AIR",
+  "badgeVisible": "VISIBLE",
+  "badgeMuted": "MUTED",
+  "badgeLive": "LIVE",
+  "badgeRecording": "REC",
+  "badgePaused": "PAUSED",
+  "badgeReady": "READY",
+  "badgePlaying": "PLAYING",
+  "mute": "Mute",
+  "unmute": "Unmute",
+  "mixerEmpty": "No audio sources found in OBS.",
+  "statusReconnectingShort": "Reconnecting",
+  "metricLive": "Live",
+  "metricRecording": "Recording",
+  "metricOff": "Off",
+  "metricAirTime": "Time on air",
+  "metricBitrate": "Bitrate",
+  "metricCpu": "OBS CPU",
+  "metricMemory": "Memory",
+  "metricFps": "Active FPS",
+  "metricRenderDropped": "Render frames lost",
+  "metricOutputDropped": "Output frames lost",
+  "metricCongestion": "Congestion",
+  "chartWindow": "Chart history",
+  "chartBitrate": "Bitrate",
+  "chartCpu": "OBS CPU",
+  "chartDropped": "Frames lost (last seconds)",
+  "alertFramesTitle": "Frames are being lost",
+  "alertFramesBody": "More than 1% of frames were lost. Viewers may see stutters. Close heavy programs, lower the bitrate or the resolution.",
+  "alertBitrateTitle": "The bitrate dropped sharply",
+  "alertBitrateBody": "Your internet upload may be unstable. If it keeps happening, lower the bitrate in OBS > Settings > Output.",
+  "soundProfileDefault": "Main",
+  "soundPageDefault": "Sounds",
+  "soundProfiles": "Sound profiles",
+  "soundProfileNew": "New sound profile",
+  "soundProfileRename": "Rename profile",
+  "soundProfileDelete": "Delete profile",
+  "soundPageNew": "New page",
+  "soundPageRename": "Rename page",
+  "soundPageDelete": "Delete page",
+  "soundEmpty": "No sounds here yet. Tap \"Add sound\".",
+  "soundAdd": "Add sound",
+  "soundEdit": "Edit sound",
+  "panicButton": "Stop all",
+  "panicDone": "All sounds stopped.",
+  "panicPartial": "Stopped, but {count} sound(s) were not found in OBS.",
+  "@panicPartial": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "soundMissing": "The sound source \"{name}\" does not exist in OBS. Edit the pad or add the sound again.",
+  "@soundMissing": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "soundPlayFromStart": "Play from the start",
+  "soundResume": "Resume",
+  "soundPause": "Pause",
+  "soundStop": "Stop",
+  "soundAddIntro": "The audio file stays on your PC — the phone does not send audio. OBS Pad creates a Media Source in OBS that plays the file, and this pad triggers it.",
+  "soundAddNeedsConnection": "Connect to OBS to create the sound source.",
+  "soundFromFile": "File on the PC",
+  "soundFromExisting": "Existing source",
+  "soundLabelHint": "e.g. Applause",
+  "soundPathField": "File path on the PC",
+  "soundPathHelp": "Tip: on Windows, Shift + right-click the file and choose \"Copy as path\" (remove the quotes). On Mac, Option + right-click > \"Copy as Pathname\".",
+  "soundPathEmpty": "Type where the file is on the PC",
+  "soundPathInvalid": "This does not look like a file path. Example: C:\\Users\\Ana\\Music\\applause.mp3",
+  "soundAllScenes": "Add to every scene (recommended)",
+  "soundAllScenesHelp": "A sound only reaches the live if its source is in the scene on air.",
+  "soundMonitor": "Also play on my headphones",
+  "soundMonitorHelp": "Uses OBS \"Monitor and Output\", so you hear it too.",
+  "soundLoop": "Repeat (loop)",
+  "soundLoopHelp": "Plays again and again until you stop it.",
+  "advanced": "Advanced",
+  "soundInputNameField": "Source name in OBS",
+  "soundInputNameHelp": "If a source with this name already exists, its file is replaced.",
+  "soundInputNameDefault": "Sound - {label}",
+  "@soundInputNameDefault": {
+    "placeholders": {
+      "label": {
+        "type": "String"
+      }
+    }
+  },
+  "soundCreateInObs": "Create in OBS",
+  "soundAddPad": "Add pad",
+  "soundAdded": "\"{name}\" added.",
+  "@soundAdded": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "soundSourceField": "Media source in OBS",
+  "soundSourceHelp": "The Media Source this pad plays.",
+  "soundNoMediaSources": "No Media Source found in OBS.",
+  "soundPickSource": "Choose which OBS media source this pad plays.",
+  "soundModeTitle": "How it plays",
+  "soundModeToEnd": "Play to the end",
+  "soundModeHold": "Hold to play",
+  "soundModeToEndHelp": "Tap to play from the start. Tap again to stop. Hold for more options.",
+  "soundModeHoldHelp": "Plays only while your finger is on the pad.",
+  "soundVolume": "Set volume",
+  "soundVolumeKeep": "Keep the volume set in OBS",
+  "duckingTitle": "Lower another audio while it plays",
+  "duckingHelp": "E.g. lower the mic or the music, and bring it back when the sound ends.",
+  "duckingTarget": "Audio to lower",
+  "duckingAmount": "Lower by {db} dB",
+  "@duckingAmount": {
+    "placeholders": {
+      "db": {
+        "type": "int"
+      }
+    }
+  },
+  "manualTitle": "Do it by hand in OBS",
+  "manualStep1": "In OBS, select the scene and click + under Sources > Media Source.",
+  "manualStep2": "Give it a name and keep \"Local File\" checked. Click Browse and choose the audio file.",
+  "manualStep3": "Check \"Close file when inactive\" and uncheck \"Restart playback when source becomes active\". Click OK.",
+  "manualStep4": "In the Audio Mixer, click ⋮ (or the gear) > Advanced Audio Properties. On the line of your sound, make sure Track 1 is checked.",
+  "manualStep5": "Optional: set Audio Monitoring to \"Monitor and Output\" to hear it on your headphones.",
+  "manualStep6": "Back here, choose \"Existing source\" and pick the source you created."
+}
