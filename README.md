@@ -149,7 +149,9 @@ keyPassword=...
 - **Tag `v0.x.y`** (ou `v1.0.0-rc.1`) → release numerado, marcado como pré-lançamento enquanto for `0.x` ou tiver sufixo.
 - **Execução manual** → só gera os arquivos (*Actions › Build apps*).
 
-O APK de teste é assinado com uma **chave de testes fixa**, guardada nos secrets do repositório (`ANDROID_DEV_KEYSTORE_BASE64`, `ANDROID_DEV_KEYSTORE_PASSWORD`, alias `obs-pad-dev`), para cada versão instalar por cima da anterior. Sem esses secrets, o build usa uma chave descartável e o pré-lançamento `dev` não é publicado. A chave da Play Store, quando houver, deve ser outra.
+O APK de teste é assinado com uma **chave de testes fixa** (secrets `ANDROID_DEV_KEYSTORE_*`), para cada versão instalar por cima da anterior. Sem os secrets, o build usa uma chave descartável e o `dev` não é publicado.
+
+**Restaurar a chave em outro computador, fazer backup no Bitwarden, atualizar os secrets ou criar uma chave nova:** `mise run chave` (um menu no terminal). Passo a passo completo, inclusive sem a ferramenta: [`docs/assinatura-android.md`](docs/assinatura-android.md).
 
 ### Arquitetura
 

@@ -27,6 +27,15 @@ jobs:
           dart pub get
           dart analyze
           dart test
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: tool/signing-key/go.mod
+      - name: Signing key tool
+        working-directory: tool/signing-key
+        run: |
+          test -z "$(gofmt -l .)"
+          go vet ./...
+          go test ./...
       - name: Desktop app
         working-directory: companion
         run: |
