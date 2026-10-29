@@ -4,6 +4,7 @@ package main
 
 import (
 	"bufio"
+	"encoding/base64"
 	"errors"
 	"fmt"
 	"os"
@@ -426,13 +427,27 @@ func (a *app) pickBitwardenItem() (bwItem, error) {
 }
 
 func (a *app) backup() error {
-	if !hasCommand("bw") {
-		return errors.New("o bw (Bitwarden CLI) não está instalado: https://bitwarden.com/help/cli/\nSem ele, veja \"Backup manual\" em docs/assinatura-android.md")
-	}
 	keystore, password, info, err := a.installedKey()
 	if err != nil {
 		return err
 	}
+	method := "manual"
+	if hasCommand("bw") {
+		method = "bw"
+		if err := a.form(huh.NewGroup(huh.NewSelect[string]().
+			Title("Como fazer o backup?").
+			Options(
+				huh.NewOption("Automático, pelo bw", "bw"),
+				huh.NewOption("Manual: copiar e colar no app ou site do Bitwarden", "manual"),
+			).
+			Value(&method))).Run(); err != nil {
+			return err
+		}
+	}
+	if method == "manual" {
+		return a.manualBackup(keystore, password, info)
+	}
+
 	if err := a.unlockBitwarden(); err != nil {
 		return err
 	}
@@ -466,6 +481,103 @@ func (a *app) backup() error {
 		"",
 		"Item: "+bwItemName+" (nota segura)",
 		dim.Render("Chave nas notas (base64), senha no campo oculto storePassword."))
+	return nil
+}
+
+type backupStep struct {
+	title, body string
+	value       string
+	what        string // "a chave", "a senha"…
+}
+
+// manualBackup walks through filling the Bitwarden item by hand (app or
+// website), copying each value to the clipboard when it is needed.
+func (a *app) manualBackup(keystore []byte, password string, info KeyInfo) error {
+	steps := []backupStep{
+		{
+			title: "Passo 1 de 4 — Crie o item",
+			body: "No Bitwarden (app ou site): Novo item › Tipo: Nota segura.\n" +
+				"Nome: " + bwItemName,
+			value: bwItemName,
+			what:  "o nome",
+		},
+		{
+			title: "Passo 2 de 4 — A chave",
+			body:  "Cole no campo Notas do item (é um texto longo, ~5.700 caracteres).",
+			value: base64.StdEncoding.EncodeToString(keystore),
+			what:  "a chave",
+		},
+		{
+			title: "Passo 3 de 4 — A senha",
+			body: "Em Campos personalizados › Novo campo:\n" +
+				"Tipo: Oculto · Nome: storePassword · Valor: cole a senha.",
+			value: password,
+			what:  "a senha",
+		},
+		{
+			title: "Passo 4 de 4 — Conferência",
+			body: "Mais um campo: Tipo: Texto · Nome: SHA-256 · Valor: cole.\n" +
+				"(Opcional: campo de texto keyAlias = " + keyAlias + ".)\n" +
+				"Depois, salve o item.",
+			value: info.Fingerprint,
+			what:  "a impressão digital",
+		},
+	}
+	defer clearClipboard()
+	for i, step := range steps {
+		choice, status := "copy", ""
+		for {
+			last := i == len(steps)-1
+			next := "Feito, próximo passo"
+			if last {
+				next = "Feito, terminar"
+			}
+			description := step.body
+			if status != "" {
+				description += "\n\n" + status
+			}
+			if err := a.form(huh.NewGroup(
+				huh.NewNote().Title(step.title).Description(description),
+				huh.NewSelect[string]().
+					Options(
+						huh.NewOption("Copiar "+step.what, "copy"),
+						huh.NewOption("Mostrar na tela", "show"),
+						huh.NewOption(next, "next"),
+					).
+					Value(&choice),
+			)).Run(); err != nil {
+				return err
+			}
+			if choice == "next" {
+				break
+			}
+			if choice == "show" {
+				fmt.Println()
+				fmt.Println(dim.Render("── " + step.what + " (selecione e copie) ──"))
+				fmt.Println(step.value)
+				fmt.Println(dim.Render("──"))
+				fmt.Println()
+				status = ""
+				choice = "next"
+				continue
+			}
+			switch copyText(step.value) {
+			case copiedSystem:
+				status = good.Render("✔ Copiei " + step.what + ". Cole no Bitwarden.")
+			case copiedTerminal:
+				status = warn.Render("Pedi ao terminal para copiar " + step.what + ".\n" +
+					"Se não colar, escolha \"Mostrar na tela\".")
+			}
+			choice = "next"
+		}
+	}
+	box(lipgloss.Color("#3FB950"),
+		good.Render("✔ Backup manual pronto"),
+		"",
+		"Item: "+bwItemName,
+		dim.Render("A área de transferência foi limpa."),
+		dim.Render("Para conferir o backup: num outro computador (ou depois),"),
+		dim.Render("Restaurar › Colar o texto da nota."))
 	return nil
 }
 

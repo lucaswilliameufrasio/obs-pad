@@ -30,7 +30,7 @@ Abre um menu no terminal (↑/↓, Enter, Esc para voltar):
 
 - **Restaurar a chave neste computador** — do Bitwarden (automático), colando o texto da nota, ou de um arquivo `.jks`.
 - **Verificar a chave instalada** — arquivo, senha, se é a chave do projeto e se o projeto está ligado a ela.
-- **Fazer backup no Bitwarden** — cria ou substitui a nota segura.
+- **Fazer backup no Bitwarden** — automático pelo `bw`, ou **manual**: guia o preenchimento no app/site do Bitwarden e copia cada valor na hora certa (funciona sem o `bw`).
 - **Atualizar os secrets do GitHub** — envia a chave instalada para os secrets.
 - **Criar uma chave nova** — só se a antiga foi perdida.
 
@@ -41,7 +41,8 @@ O que cada opção precisa:
 | Opção | Precisa de |
 |---|---|
 | Restaurar colando o texto / de arquivo | nada além do Go (ou mise) |
-| Restaurar do Bitwarden, Backup | [`bw`, a CLI do Bitwarden](https://bitwarden.com/help/cli/) (a ferramenta faz o `bw login`/desbloqueio se precisar) |
+| Restaurar do Bitwarden, Backup automático | [`bw`, a CLI do Bitwarden](https://bitwarden.com/help/cli/) (a ferramenta faz o `bw login`/desbloqueio se precisar) |
+| Backup manual | nada: copia para a área de transferência (`wl-copy`, `xclip`/`xsel`, macOS, Windows ou, sem eles, pelo próprio terminal) ou mostra na tela |
 | Atualizar os secrets | [`gh`](https://cli.github.com), logado (`gh auth login`) com acesso de admin ao repositório |
 | Criar chave nova | Java (`keytool`), o mesmo usado para compilar o Android |
 
@@ -89,9 +90,12 @@ cp key.properties /caminho/do/obs-pad/android/key.properties
 
 ## Backup no Bitwarden
 
-**Com a ferramenta:** `mise run chave` › **Fazer backup no Bitwarden**. Se já existir um backup, ela pergunta antes de substituir.
+**Com a ferramenta:** `mise run chave` › **Fazer backup no Bitwarden**:
 
-**Na mão** (app ou site do Bitwarden):
+- **Automático, pelo `bw`** (se instalado): cria a nota segura; se já existir, pergunta antes de substituir.
+- **Manual** (sem `bw`, ou se preferir): quatro passos na tela — criar a nota, colar a chave, criar o campo oculto da senha, colar a impressão digital. Em cada passo, *Copiar* põe o valor na área de transferência e *Mostrar na tela* exibe para copiar com o mouse. No fim, a área de transferência é limpa.
+
+**Totalmente na mão** (sem a ferramenta), no app ou site do Bitwarden:
 
 1. Crie uma **Nota segura** chamada `OBS Pad – chave de testes Android`.
 2. **Notas**: o texto da chave — copie com
