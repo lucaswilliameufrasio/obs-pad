@@ -1023,4 +1023,96 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get soundAddToAllScenes => 'Add to all scenes';
+
+  @override
+  String get findOnNetwork => 'Find on network';
+
+  @override
+  String get readQr => 'Read QR code';
+
+  @override
+  String get findOrQrHint =>
+      'With OBS Pad Desktop open on the computer, it is found automatically. Or read the QR code OBS shows in Tools › WebSocket Server Settings › Show Connect Info.';
+
+  @override
+  String get findTitle => 'Computers on the network';
+
+  @override
+  String get findSearching =>
+      'Looking for computers with OBS Pad Desktop open…';
+
+  @override
+  String get findNone =>
+      'No computer found. OBS Pad Desktop must be open on the computer, and the phone on the same Wi-Fi. Without it, type the IP or read the OBS QR code.';
+
+  @override
+  String get findObsOff =>
+      'Phone control is off in OBS. Turn it on in OBS Pad Desktop.';
+
+  @override
+  String get tryAgain => 'Try again';
+
+  @override
+  String get qrTitle => 'Read QR code';
+
+  @override
+  String get qrHint =>
+      'Point at the QR code of OBS Pad Desktop or of OBS (Tools › WebSocket Server Settings › Show Connect Info).';
+
+  @override
+  String get qrCameraError =>
+      'Could not open the camera. Allow camera access in the phone settings.';
+
+  @override
+  String get qrInvalid => 'This QR code is not an OBS connection.';
+
+  @override
+  String get companionReady =>
+      'OBS Pad Desktop is open on the computer: you can send the sound from here.';
+
+  @override
+  String get companionSendFromPhone => 'Send from phone';
+
+  @override
+  String get companionPickFromComputer => 'Pick from computer folder';
+
+  @override
+  String get companionTip =>
+      'Tip: with OBS Pad Desktop open on the computer, you can send the sound straight from the phone instead of typing the path.';
+
+  @override
+  String companionFolderTitle(String folder) {
+    return 'Sounds in $folder';
+  }
+
+  @override
+  String get companionFolderEmpty =>
+      'The folder is empty. Send a sound from the phone or copy files into it on the computer.';
+
+  @override
+  String get companionErrUnreachable =>
+      'Could not reach OBS Pad Desktop. Is it open on the computer?';
+
+  @override
+  String get companionErrUnauthorized =>
+      'The OBS password on this phone is different from the computer. Check the password in the computer settings.';
+
+  @override
+  String get companionErrClock =>
+      'The phone and computer clocks are different. Set automatic time on both.';
+
+  @override
+  String get companionErrNotReady =>
+      'OBS on the computer has no password. In OBS Pad Desktop, press \"Turn on phone control\".';
+
+  @override
+  String get companionErrTooLarge => 'File too big (50 MB max).';
+
+  @override
+  String get companionErrBadFile =>
+      'This is not a sound OBS can play. Use mp3, wav, ogg, m4a or flac.';
+
+  @override
+  String get companionErrServer =>
+      'The computer could not save the file. Try again.';
 }

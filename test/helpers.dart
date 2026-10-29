@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:obs_pad/app.dart';
 import 'package:obs_pad/data/storage/profiles_store.dart';
@@ -21,6 +22,7 @@ Future<TestApp> pumpObsPad(
   WidgetTester tester, {
   FakeObsRepository? repository,
   Map<String, Object> prefs = const {},
+  List<Override> overrides = const [],
 }) async {
   tester.view.physicalSize = const Size(1200, 3000);
   tester.view.devicePixelRatio = 1.5;
@@ -38,6 +40,7 @@ Future<TestApp> pumpObsPad(
         sharedPreferencesProvider.overrideWithValue(sharedPrefs),
         secretStoreProvider.overrideWithValue(secrets),
         obsRepositoryProvider.overrideWithValue(repo),
+        ...overrides,
       ],
       child: const ObsPadApp(),
     ),

@@ -474,5 +474,37 @@
         "type": "String"
       }
     }
+  },
+  "findOnNetwork": "Find on network",
+  "readQr": "Read QR code",
+  "findOrQrHint": "With OBS Pad Desktop open on the computer, it is found automatically. Or read the QR code OBS shows in Tools › WebSocket Server Settings › Show Connect Info.",
+  "findTitle": "Computers on the network",
+  "findSearching": "Looking for computers with OBS Pad Desktop open…",
+  "findNone": "No computer found. OBS Pad Desktop must be open on the computer, and the phone on the same Wi-Fi. Without it, type the IP or read the OBS QR code.",
+  "findObsOff": "Phone control is off in OBS. Turn it on in OBS Pad Desktop.",
+  "tryAgain": "Try again",
+  "qrTitle": "Read QR code",
+  "qrHint": "Point at the QR code of OBS Pad Desktop or of OBS (Tools › WebSocket Server Settings › Show Connect Info).",
+  "qrCameraError": "Could not open the camera. Allow camera access in the phone settings.",
+  "qrInvalid": "This QR code is not an OBS connection.",
+  "companionReady": "OBS Pad Desktop is open on the computer: you can send the sound from here.",
+  "companionSendFromPhone": "Send from phone",
+  "companionPickFromComputer": "Pick from computer folder",
+  "companionTip": "Tip: with OBS Pad Desktop open on the computer, you can send the sound straight from the phone instead of typing the path.",
+  "companionFolderTitle": "Sounds in {folder}",
+  "companionFolderEmpty": "The folder is empty. Send a sound from the phone or copy files into it on the computer.",
+  "companionErrUnreachable": "Could not reach OBS Pad Desktop. Is it open on the computer?",
+  "companionErrUnauthorized": "The OBS password on this phone is different from the computer. Check the password in the computer settings.",
+  "companionErrClock": "The phone and computer clocks are different. Set automatic time on both.",
+  "companionErrNotReady": "OBS on the computer has no password. In OBS Pad Desktop, press \"Turn on phone control\".",
+  "companionErrTooLarge": "File too big (50 MB max).",
+  "companionErrBadFile": "This is not a sound OBS can play. Use mp3, wav, ogg, m4a or flac.",
+  "companionErrServer": "The computer could not save the file. Try again.",
+  "@companionFolderTitle": {
+    "placeholders": {
+      "folder": {
+        "type": "String"
+      }
+    }
   }
 }

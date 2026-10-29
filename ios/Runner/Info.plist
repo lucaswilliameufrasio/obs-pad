@@ -7,6 +7,8 @@
 		<key>NSAllowsLocalNetworking</key>
 		<true/>
 	</dict>
+	<key>NSCameraUsageDescription</key>
+	<string>A câmera é usada só para ler o QR code de conexão do OBS.</string>
 	<key>NSLocalNetworkUsageDescription</key>
 	<string>O OBS Pad precisa acessar sua rede Wi-Fi para encontrar e controlar o OBS no seu computador.</string>
 	<key>CADisableMinimumFrameDurationOnPhone</key>

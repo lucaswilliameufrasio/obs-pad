@@ -1023,4 +1023,96 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get soundAddToAllScenes => 'Pôr em todas as cenas';
+
+  @override
+  String get findOnNetwork => 'Procurar na rede';
+
+  @override
+  String get readQr => 'Ler QR code';
+
+  @override
+  String get findOrQrHint =>
+      'Com o OBS Pad Desktop aberto no computador, ele é encontrado sozinho. Ou leia o QR code que o OBS mostra em Ferramentas › Configurações do Servidor WebSocket › Mostrar informações de conexão.';
+
+  @override
+  String get findTitle => 'Computadores na rede';
+
+  @override
+  String get findSearching =>
+      'Procurando computadores com o OBS Pad Desktop aberto…';
+
+  @override
+  String get findNone =>
+      'Não achei nenhum computador. O OBS Pad Desktop precisa estar aberto no computador, e o celular no mesmo Wi-Fi. Sem ele, digite o IP ou leia o QR code do OBS.';
+
+  @override
+  String get findObsOff =>
+      'O controle pelo celular está desligado no OBS. Ligue no OBS Pad Desktop.';
+
+  @override
+  String get tryAgain => 'Tentar de novo';
+
+  @override
+  String get qrTitle => 'Ler QR code';
+
+  @override
+  String get qrHint =>
+      'Aponte para o QR code do OBS Pad Desktop ou do OBS (Ferramentas › Configurações do Servidor WebSocket › Mostrar informações de conexão).';
+
+  @override
+  String get qrCameraError =>
+      'Não consegui abrir a câmera. Permita o acesso à câmera nas configurações do celular.';
+
+  @override
+  String get qrInvalid => 'Esse QR code não é de conexão do OBS.';
+
+  @override
+  String get companionReady =>
+      'O OBS Pad Desktop está aberto no computador: dá para mandar o som daqui.';
+
+  @override
+  String get companionSendFromPhone => 'Mandar do celular';
+
+  @override
+  String get companionPickFromComputer => 'Escolher da pasta do PC';
+
+  @override
+  String get companionTip =>
+      'Dica: com o OBS Pad Desktop aberto no computador, dá para mandar o som direto do celular em vez de digitar o caminho.';
+
+  @override
+  String companionFolderTitle(String folder) {
+    return 'Sons em $folder';
+  }
+
+  @override
+  String get companionFolderEmpty =>
+      'A pasta está vazia. Mande um som do celular ou copie arquivos para ela no computador.';
+
+  @override
+  String get companionErrUnreachable =>
+      'Não consegui falar com o OBS Pad Desktop. Ele está aberto no computador?';
+
+  @override
+  String get companionErrUnauthorized =>
+      'A senha do OBS neste celular é diferente da do computador. Confira a senha nas configurações do computador.';
+
+  @override
+  String get companionErrClock =>
+      'O relógio do celular e o do computador estão diferentes. Deixe a hora automática nos dois.';
+
+  @override
+  String get companionErrNotReady =>
+      'O OBS do computador está sem senha. No OBS Pad Desktop, toque em \"Ligar o controle pelo celular\".';
+
+  @override
+  String get companionErrTooLarge => 'Arquivo grande demais (máximo 50 MB).';
+
+  @override
+  String get companionErrBadFile =>
+      'Esse arquivo não é um som que o OBS toca. Use mp3, wav, ogg, m4a ou flac.';
+
+  @override
+  String get companionErrServer =>
+      'O computador não conseguiu salvar o arquivo. Tente de novo.';
 }

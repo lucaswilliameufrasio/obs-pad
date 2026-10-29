@@ -1903,6 +1903,156 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Add to all scenes'**
   String get soundAddToAllScenes;
+
+  /// No description provided for @findOnNetwork.
+  ///
+  /// In en, this message translates to:
+  /// **'Find on network'**
+  String get findOnNetwork;
+
+  /// No description provided for @readQr.
+  ///
+  /// In en, this message translates to:
+  /// **'Read QR code'**
+  String get readQr;
+
+  /// No description provided for @findOrQrHint.
+  ///
+  /// In en, this message translates to:
+  /// **'With OBS Pad Desktop open on the computer, it is found automatically. Or read the QR code OBS shows in Tools › WebSocket Server Settings › Show Connect Info.'**
+  String get findOrQrHint;
+
+  /// No description provided for @findTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Computers on the network'**
+  String get findTitle;
+
+  /// No description provided for @findSearching.
+  ///
+  /// In en, this message translates to:
+  /// **'Looking for computers with OBS Pad Desktop open…'**
+  String get findSearching;
+
+  /// No description provided for @findNone.
+  ///
+  /// In en, this message translates to:
+  /// **'No computer found. OBS Pad Desktop must be open on the computer, and the phone on the same Wi-Fi. Without it, type the IP or read the OBS QR code.'**
+  String get findNone;
+
+  /// No description provided for @findObsOff.
+  ///
+  /// In en, this message translates to:
+  /// **'Phone control is off in OBS. Turn it on in OBS Pad Desktop.'**
+  String get findObsOff;
+
+  /// No description provided for @tryAgain.
+  ///
+  /// In en, this message translates to:
+  /// **'Try again'**
+  String get tryAgain;
+
+  /// No description provided for @qrTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Read QR code'**
+  String get qrTitle;
+
+  /// No description provided for @qrHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Point at the QR code of OBS Pad Desktop or of OBS (Tools › WebSocket Server Settings › Show Connect Info).'**
+  String get qrHint;
+
+  /// No description provided for @qrCameraError.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not open the camera. Allow camera access in the phone settings.'**
+  String get qrCameraError;
+
+  /// No description provided for @qrInvalid.
+  ///
+  /// In en, this message translates to:
+  /// **'This QR code is not an OBS connection.'**
+  String get qrInvalid;
+
+  /// No description provided for @companionReady.
+  ///
+  /// In en, this message translates to:
+  /// **'OBS Pad Desktop is open on the computer: you can send the sound from here.'**
+  String get companionReady;
+
+  /// No description provided for @companionSendFromPhone.
+  ///
+  /// In en, this message translates to:
+  /// **'Send from phone'**
+  String get companionSendFromPhone;
+
+  /// No description provided for @companionPickFromComputer.
+  ///
+  /// In en, this message translates to:
+  /// **'Pick from computer folder'**
+  String get companionPickFromComputer;
+
+  /// No description provided for @companionTip.
+  ///
+  /// In en, this message translates to:
+  /// **'Tip: with OBS Pad Desktop open on the computer, you can send the sound straight from the phone instead of typing the path.'**
+  String get companionTip;
+
+  /// No description provided for @companionFolderTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Sounds in {folder}'**
+  String companionFolderTitle(String folder);
+
+  /// No description provided for @companionFolderEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'The folder is empty. Send a sound from the phone or copy files into it on the computer.'**
+  String get companionFolderEmpty;
+
+  /// No description provided for @companionErrUnreachable.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not reach OBS Pad Desktop. Is it open on the computer?'**
+  String get companionErrUnreachable;
+
+  /// No description provided for @companionErrUnauthorized.
+  ///
+  /// In en, this message translates to:
+  /// **'The OBS password on this phone is different from the computer. Check the password in the computer settings.'**
+  String get companionErrUnauthorized;
+
+  /// No description provided for @companionErrClock.
+  ///
+  /// In en, this message translates to:
+  /// **'The phone and computer clocks are different. Set automatic time on both.'**
+  String get companionErrClock;
+
+  /// No description provided for @companionErrNotReady.
+  ///
+  /// In en, this message translates to:
+  /// **'OBS on the computer has no password. In OBS Pad Desktop, press \"Turn on phone control\".'**
+  String get companionErrNotReady;
+
+  /// No description provided for @companionErrTooLarge.
+  ///
+  /// In en, this message translates to:
+  /// **'File too big (50 MB max).'**
+  String get companionErrTooLarge;
+
+  /// No description provided for @companionErrBadFile.
+  ///
+  /// In en, this message translates to:
+  /// **'This is not a sound OBS can play. Use mp3, wav, ogg, m4a or flac.'**
+  String get companionErrBadFile;
+
+  /// No description provided for @companionErrServer.
+  ///
+  /// In en, this message translates to:
+  /// **'The computer could not save the file. Try again.'**
+  String get companionErrServer;
 }
 
 class _AppLocalizationsDelegate

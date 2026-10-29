@@ -48,6 +48,8 @@ dependencies:
   web_socket_channel: ^3.0.3
   obs_pad_companion:
     path: packages/obs_pad_companion
+  file_picker: ^13.3.0
+  mobile_scanner: ^7.4.2
 
 dev_dependencies:
   flutter_test:

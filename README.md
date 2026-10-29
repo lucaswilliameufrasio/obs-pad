@@ -61,25 +61,40 @@ Se algo falhar, o app mostra o passo a passo para fazer manualmente no OBS e dep
 
 **Ducking**: o volume original fica salvo no celular enquanto o som toca. Se a conexão cair ou o app for fechado no meio do som, o volume é restaurado assim que o app reconectar ao OBS. Se o som ainda estiver tocando nesse momento, a música volta ao normal antes de ele acabar.
 
-## 4. Limitações conhecidas
+## 4. OBS Pad Desktop (opcional, no computador)
 
-O app não usa servidor: conversa direto com o OBS e guarda tudo no celular.
+Um app pequeno para o computador do OBS (Windows, macOS ou Linux). Ele não é obrigatório: sem ele tudo funciona digitando o IP e o caminho dos sons. Com ele aberto:
+
+- **"Procurar na rede"** no celular acha o computador sozinho;
+- **QR code**: ele mostra um QR com IP, porta e senha — o celular lê e já testa a conexão. (O celular também lê o QR do próprio OBS, em *Ferramentas › Configurações do Servidor WebSocket › Mostrar informações de conexão*.)
+- **Sons do celular**: em *Adicionar som*, "Mandar do celular" envia o arquivo para a pasta `OBS Pad/Sons` do computador, e "Escolher da pasta do PC" lista o que já está lá;
+- **Ligar o controle pelo celular**: liga o servidor WebSocket do OBS com uma senha (com o OBS fechado);
+- **Firewall do Windows**: um botão libera o OBS e o OBS Pad Desktop em redes privadas.
+
+Ele usa a porta **4457** (TCP e UDP), só na rede local. Cada pedido do celular é assinado com a senha do OBS, que o app lê das configurações do OBS no próprio computador: não há pareamento extra e a senha não passa pela rede.
+
+Para baixar: aba *Releases* do GitHub (quando houver uma versão) ou *Actions › Build apps* (arquivos de cada execução). O app ainda não é assinado digitalmente: o Windows (SmartScreen) e o macOS (Gatekeeper) vão avisar na primeira vez — no Windows, *Mais informações › Executar assim mesmo*; no macOS, botão direito no app › *Abrir*.
+
+## 5. Limitações conhecidas
+
+O app do celular não usa servidor: conversa direto com o OBS e guarda tudo no celular.
 
 - **Tamanho dos botões**: todos os botões ocupam uma célula; o tamanho muda o ícone e o texto, e o número de colunas (2 a 6) é escolhido por layout.
 - **App aberto e na tela**: com o app em segundo plano o celular derruba a conexão; alertas de métricas, macros em andamento e "segurar para tocar" param.
 - **Bateria**: as métricas são lidas a cada 1 s enquanto o app está conectado, em qualquer aba (para o alerta aparecer em todas).
-- **IP digitado à mão**: o OBS não se anuncia na rede, então o app não encontra o PC sozinho.
+- **Sem o OBS Pad Desktop**: o IP e o caminho dos sons são digitados (ou o IP vem do QR code do OBS).
+- **"Procurar na rede" no iPhone**: o iOS só deixa apps mandarem broadcast na rede com uma permissão especial da Apple, que ainda não foi pedida. No iPhone, use o QR code ou digite o IP.
+- **Ler QR code no Android** usa o leitor do Google Play Services; em aparelhos sem ele (ex.: Huawei recentes), digite o IP.
+- **Som fora da cena no ar**: o OBS só toca fontes de mídia das cenas no ar. O app percebe quando o som não tocou e oferece colocá-lo em todas as cenas.
 - **Atalhos**: só os que o OBS lista pelo nome; combinações de teclas puras não são suportadas.
-- **Sons**: o arquivo precisa já estar no PC e o caminho é digitado — o obs-websocket não permite navegar nas pastas nem enviar arquivos.
 - **Layouts e sons ficam só neste celular**: não há backup nem sincronização entre aparelhos.
 - **Idiomas**: português e inglês.
 - **Pausar a gravação**: o OBS só pausa quando a gravação tem qualidade própria (Configurações › Saída › Qualidade da gravação diferente de "Mesma da transmissão"). Com o padrão do OBS, o app avisa e explica como mudar.
-- **Ainda não validado em aparelhos**: o app é testado contra um OBS real (veja *Testes contra o OBS real*), mas ainda não em celulares. O app iOS não foi compilado, e o APK de release usa a chave de debug.
+- **Ainda não validado em aparelhos**: o celular e o OBS Pad Desktop são testados contra um OBS real (veja *Testes contra o OBS real*), mas ainda não em celulares, nem o app do PC em Windows/macOS (lá ele só é compilado). O app iOS não foi compilado, e o APK de release usa a chave de debug.
 
-### O que precisaria de algo além do app
+### O que ainda precisaria de algo além do app
 
-- **Escolher/enviar sons pelo celular**: um pequeno programa no PC que receba o arquivo ou mostre as pastas.
-- **Alertas com o app fechado**: algo rodando no PC (ou um serviço de push) vigiando o OBS.
+- **Alertas com o celular no bolso**: o OBS Pad Desktop poderia vigiar a live, mas avisar um celular com o app fechado exige um serviço de notificações push (servidor).
 - **Sincronizar layouts entre aparelhos**: um servidor — ou, sem servidor, exportar/importar um arquivo.
 - **Acesso de fora sem VPN**: daria com um servidor intermediário, mas a VPN é mais simples e mais segura.
 
@@ -146,6 +161,12 @@ lib/
 - `test/home_features_test.dart` — botões, sincronização por eventos, mixer, soundboard e "Adicionar som".
 - `test/real_obs/real_obs_test.dart` — contra um **OBS Studio de verdade** (veja abaixo).
 
+### OBS Pad Desktop e pacote compartilhado
+
+- `companion/` — o app do computador (Flutter desktop). `cd companion && flutter run -d linux` (ou `windows`/`macos`); `flutter test`.
+- `packages/obs_pad_companion/` — protocolo, servidor e cliente em Dart puro, usados pelos dois apps. `dart test` roda servidor e cliente de verdade em loopback (assinatura, senha errada, relógio, arquivo inválido, *path traversal*, descoberta).
+- No macOS o app roda sem *App Sandbox* (precisa ler as configurações do OBS e abrir portas); por isso não vai para a App Store.
+
 ### Testes contra o OBS real
 
 `tool/obs-docker` tem uma imagem Docker com o OBS Studio rodando sem tela (Xvfb), o obs-websocket ligado e um servidor RTMP local (nginx-rtmp) para fazer lives de verdade:
@@ -155,6 +176,8 @@ tool/obs-docker/run-tests.sh          # sobe o OBS, roda test/real_obs e remove 
 KEEP=1 tool/obs-docker/run-tests.sh   # deixa o OBS rodando (porta 4455, senha obspad-test)
 ```
 
+Se o OBS Pad Desktop estiver compilado para Linux (`cd companion && flutter build linux --release`), ele roda no mesmo container, ao lado do OBS, e os testes também cobrem a descoberta na rede, a senha errada e mandar um som do "celular" que o OBS toca.
+
 Cobre: teste de conexão (senha errada, porta fechada), cenas, fontes, "Adicionar som" e tocar o som (com medidores de volume), mixer, ducking, gravação (pausar, retomar, parar), live com cálculo de bitrate, Replay Buffer desligado, atalhos e reconexão depois de o OBS reiniciar. O CI roda esses testes a cada push.
 
 Problemas que só apareceram com o OBS real (e foram corrigidos):
@@ -163,3 +186,4 @@ Problemas que só apareceram com o OBS real (e foram corrigidos):
 - Ao pausar, o OBS manda `outputActive: false`; o app mostrava a gravação como parada.
 - Uma fonte de mídia recém-criada leva ~100 ms para obedecer o "parar"; tocar logo em seguida era cortado na hora.
 - Replay Buffer desligado vinha como um erro genérico; agora explica onde ligar.
+- Um som fora da cena no ar: o OBS responde "ok" mas não toca nada. O app percebe (nenhum evento de início) e oferece colocar o som em todas as cenas.

@@ -6,6 +6,7 @@ import '../../domain/obs_failure.dart';
 import '../../domain/obs_models.dart';
 import '../../domain/sound/sound_models.dart';
 import '../../l10n/app_localizations.dart';
+import '../companion/computer_sounds_card.dart';
 import '../connection/obs_live_state.dart';
 import '../providers.dart';
 import '../widgets/catalog.dart';
@@ -186,6 +187,21 @@ class _AddSoundPageState extends ConsumerState<AddSoundPage> {
             ),
             const SizedBox(height: 12),
             if (_mode == _Mode.newFile) ...[
+              ComputerSoundsCard(
+                onPicked: (sound) {
+                  _path.text = sound.path;
+                  if (_label.text.trim().isEmpty) {
+                    final dot = sound.name.lastIndexOf('.');
+                    _label.text = dot > 0
+                        ? sound.name.substring(0, dot)
+                        : sound.name;
+                    _onLabelChanged(_label.text);
+                  } else {
+                    setState(() {});
+                  }
+                },
+              ),
+              const SizedBox(height: 12),
               TextFormField(
                 key: const Key('field-sound-path'),
                 controller: _path,

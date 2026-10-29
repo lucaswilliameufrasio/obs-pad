@@ -3,11 +3,14 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:obs_pad_companion/obs_pad_companion.dart';
 
 import '../../domain/connection_profile.dart';
 import '../../domain/obs_failure.dart';
 import '../../domain/obs_models.dart';
 import '../../l10n/app_localizations.dart';
+import '../companion/computer_helper.dart';
+import '../companion/find_computers_sheet.dart';
 import '../providers.dart';
 import '../widgets/common.dart';
 
@@ -144,6 +147,53 @@ class _ConnectionFormState extends ConsumerState<ConnectionForm> {
     }
   }
 
+  void _fill({
+    required String host,
+    required int port,
+    String? name,
+    String? password,
+  }) {
+    setState(() {
+      _host.text = host;
+      _port.text = '$port';
+      if (name != null && _name.text.trim().isEmpty) _name.text = name;
+      if (password != null) _password.text = password;
+    });
+  }
+
+  Future<void> _findOnNetwork() async {
+    FocusScope.of(context).unfocus();
+    final computer = await showFindComputersSheet(context);
+    if (computer == null || !mounted) return;
+    _fill(
+      host: computer.address,
+      port: computer.announcement.obsPort,
+      name: computer.announcement.name,
+    );
+  }
+
+  Future<void> _readQr() async {
+    FocusScope.of(context).unfocus();
+    final l = AppLocalizations.of(context);
+    final text = await ref.read(qrScannerProvider)(context);
+    if (text == null || !mounted) return;
+    final link = ConnectionLink.tryParse(text);
+    if (link == null) {
+      ScaffoldMessenger.of(context)
+        ..hideCurrentSnackBar()
+        ..showSnackBar(SnackBar(content: Text(l.qrInvalid)));
+      return;
+    }
+    _fill(
+      host: link.host,
+      port: link.port,
+      name: link.name,
+      password: link.password,
+    );
+    // Everything is filled: check it right away.
+    await _runTest();
+  }
+
   String? _validateHost(AppLocalizations l, String? value) =>
       switch (validateHost(value ?? '')) {
         null => null,
@@ -167,6 +217,30 @@ class _ConnectionFormState extends ConsumerState<ConnectionForm> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
+          Row(
+            children: [
+              Expanded(
+                child: OutlinedButton.icon(
+                  key: const Key('btn-find'),
+                  onPressed: _findOnNetwork,
+                  icon: const Icon(Icons.wifi_find),
+                  label: Text(l.findOnNetwork),
+                ),
+              ),
+              const SizedBox(width: 8),
+              Expanded(
+                child: OutlinedButton.icon(
+                  key: const Key('btn-read-qr'),
+                  onPressed: _readQr,
+                  icon: const Icon(Icons.qr_code_scanner),
+                  label: Text(l.readQr),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 8),
+          Text(l.findOrQrHint, style: Theme.of(context).textTheme.bodySmall),
+          const SizedBox(height: 16),
           TextFormField(
             key: const Key('field-name'),
             controller: _name,
