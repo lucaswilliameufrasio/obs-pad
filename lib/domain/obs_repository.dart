@@ -64,4 +64,7 @@ abstract interface class ObsRepository {
   Future<ObsMediaState> getMediaState(String inputName);
   Future<void> setMediaLooping(String inputName, {required bool loop});
   Future<MediaSourceSetupResult> setupMediaSource(MediaSourceRequest request);
+
+  /// Adds an existing source to each scene that does not have it yet.
+  Future<void> addInputToScenes(String inputName, List<String> sceneNames);
 }

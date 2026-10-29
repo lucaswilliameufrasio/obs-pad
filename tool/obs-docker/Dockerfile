@@ -9,6 +9,7 @@ RUN apt-get update \
  && apt-get install -y --no-install-recommends \
       obs-studio xvfb xauth mesa-utils libgl1-mesa-dri dbus-x11 \
       ffmpeg ca-certificates nginx libnginx-mod-rtmp \
+      libgtk-3-0t64 \
  && rm -rf /var/lib/apt/lists/*
 
 RUN useradd -m obs \

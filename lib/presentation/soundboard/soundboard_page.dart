@@ -55,10 +55,40 @@ class _SoundboardPageState extends ConsumerState<SoundboardPage> {
             ),
           ),
         );
+    } else if (error is ObsFailure &&
+        error.kind == ObsFailureKind.soundNotOnAir) {
+      ScaffoldMessenger.of(context)
+        ..hideCurrentSnackBar()
+        ..showSnackBar(
+          SnackBar(
+            content: Text(l.soundNotOnAir(pad.inputName)),
+            duration: const Duration(seconds: 10),
+            action: SnackBarAction(
+              label: l.soundAddToAllScenes,
+              onPressed: () => unawaited(_addToAllScenesAndPlay(pad, pageId)),
+            ),
+          ),
+        );
     } else {
       showFailureSnack(context, error);
     }
   }
+
+  Future<void> _addToAllScenesAndPlay(SoundPad pad, String pageId) => _run(
+    () async {
+      final scenes = ref
+          .read(obsLiveStateProvider)
+          .scenes
+          .map((s) => s.name)
+          .toList();
+      await ref
+          .read(obsRepositoryProvider)
+          .addInputToScenes(pad.inputName, scenes);
+      await ref.read(soundPlayerProvider).start(pad);
+    },
+    pad,
+    pageId,
+  );
 
   Future<void> _run(
     Future<void> Function() action,

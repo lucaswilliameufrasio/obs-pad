@@ -190,6 +190,42 @@ void main() {
     expect(app.repository.calls, contains('volume Música 0.50'));
   });
 
+  testWidgets('sound outside the scene on air: explains and fixes it', (
+    tester,
+  ) async {
+    final repo = FakeObsRepository()..playsOnRestart = false;
+    await pumpObsPad(
+      tester,
+      repository: repo,
+      prefs: configured(
+        pads: const [SoundPad(id: 'b', label: 'Buzina', inputName: 'Buzina')],
+      ),
+    );
+    await openTab(tester, 'Sons');
+    await tester.tap(find.text('Buzina'));
+    await tester.pump(const Duration(seconds: 3));
+    await tester.pumpAndSettle();
+    expect(
+      find.textContaining('não está na cena que está no ar'),
+      findsOneWidget,
+    );
+
+    // One tap puts it in every scene and plays it again.
+    repo
+      ..playsOnRestart = true
+      ..calls.clear();
+    await tester.tap(find.text('Pôr em todas as cenas'));
+    await tester.pumpAndSettle();
+    expect(repo.calls, [
+      'addToScenes Buzina Começando,Jogo,Intervalo',
+      'media Buzina restart',
+    ]);
+    expect(
+      find.textContaining('não está na cena que está no ar'),
+      findsNothing,
+    );
+  });
+
   testWidgets('panic button stops every sound', (tester) async {
     const pads = [
       SoundPad(id: 'a', label: 'A', inputName: 'Som A'),

@@ -298,5 +298,7 @@
   "failRecordPauseTitle": "O OBS não pausou a gravação",
   "failRecordPauseHint": "Isso acontece quando a gravação usa a mesma qualidade da live. No OBS: Configurações › Saída › Qualidade da gravação: escolha outra opção (ex.: \"Alta qualidade\"). Depois pare e comece a gravação de novo.",
   "failReplayOffTitle": "Replay Buffer desligado",
-  "failReplayOffHint": "No OBS: Configurações › Saída › marque \"Ativar Replay Buffer\". Depois clique em \"Iniciar Replay Buffer\" na tela principal."
+  "failReplayOffHint": "No OBS: Configurações › Saída › marque \"Ativar Replay Buffer\". Depois clique em \"Iniciar Replay Buffer\" na tela principal.",
+  "soundNotOnAir": "O OBS não tocou \"{name}\": esse som não está na cena que está no ar, e o OBS só toca sons das cenas no ar.",
+  "soundAddToAllScenes": "Pôr em todas as cenas"
 }

@@ -1,0 +1,99 @@
+{
+  "@@locale": "en",
+  "appTitle": "OBS Pad Desktop",
+  "appSubtitle": "Keep this app open while you use OBS Pad on your phone. It finds this computer for the phone and receives the sounds you send.",
+  "obsSection": "OBS on this computer",
+  "obsNotFound": "OBS settings not found. Open OBS once (version 28 or newer), close it and come back here.",
+  "obsRunning": "OBS is open",
+  "obsClosed": "OBS is closed",
+  "phoneControlOn": "Phone control is on (port {port}, with password)",
+  "@phoneControlOn": {
+    "placeholders": {
+      "port": {
+        "type": "int"
+      }
+    }
+  },
+  "phoneControlOff": "Phone control is off",
+  "phoneControlNoPassword": "Phone control is on, but without a password",
+  "enableButton": "Turn on phone control",
+  "enableNeedsClosedObs": "Close OBS first: it undoes this change when it closes. Then press the button.",
+  "enableExplain": "This turns on the OBS WebSocket server with a password, the same as doing it in OBS under Tools › WebSocket Server Settings.",
+  "enableDone": "Done! Open OBS again and connect the phone below.",
+  "enableFailed": "Could not change the OBS settings. Do it in OBS: Tools › WebSocket Server Settings › Enable, with a password.",
+  "connectSection": "Connect the phone",
+  "connectHowTo": "In OBS Pad on the phone, tap \"Read QR code\" and point the camera here. Or tap \"Find on network\".",
+  "showQr": "Show QR code",
+  "hideQr": "Hide QR code",
+  "qrWarning": "The QR code contains the OBS password. Only show it to people you trust.",
+  "addressLabel": "Computer IP",
+  "addressVpn": "{ip} (VPN, works away from home)",
+  "@addressVpn": {
+    "placeholders": {
+      "ip": {
+        "type": "String"
+      }
+    }
+  },
+  "noAddress": "No network found. Connect this computer to the Wi-Fi or cable.",
+  "portLabel": "Port",
+  "passwordLabel": "Password",
+  "showPassword": "Show",
+  "copy": "Copy",
+  "copied": "Copied",
+  "soundsSection": "Sounds",
+  "soundsFolder": "Sounds sent from the phone are saved in:",
+  "soundsCount": "{count, plural, =0{No sounds yet} =1{1 sound} other{{count} sounds}}",
+  "@soundsCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "openFolder": "Open folder",
+  "firewallSection": "Windows Firewall",
+  "firewallExplain": "If the phone cannot find or connect to this computer, allow OBS and OBS Pad on private networks. Windows will ask for permission.",
+  "firewallButton": "Allow on the firewall",
+  "firewallDone": "Done. Also check that the Wi-Fi is set as a Private network.",
+  "firewallFailed": "It was not allowed. Try again and answer \"Yes\" on the Windows prompt.",
+  "serverFailed": "Another program is using port 4457 (maybe OBS Pad Desktop is already open). The phone will not find this computer or send sounds until you close it.",
+  "activitySection": "What the phone did",
+  "activityEmpty": "Nothing yet.",
+  "activityDiscovered": "A phone found this computer ({ip})",
+  "@activityDiscovered": {
+    "placeholders": {
+      "ip": {
+        "type": "String"
+      }
+    }
+  },
+  "activityListed": "The phone opened the sounds list",
+  "activityUploaded": "Received \"{name}\"",
+  "@activityUploaded": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "activityRejected": "Refused a request from {ip}: the OBS password on the phone is different",
+  "@activityRejected": {
+    "placeholders": {
+      "ip": {
+        "type": "String"
+      }
+    }
+  },
+  "activityRejectedOther": "Refused a request from {ip} ({reason})",
+  "@activityRejectedOther": {
+    "placeholders": {
+      "ip": {
+        "type": "String"
+      },
+      "reason": {
+        "type": "String"
+      }
+    }
+  }
+}

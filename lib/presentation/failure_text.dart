@@ -63,6 +63,7 @@ FailureText describeFailure(AppLocalizations l, Object error) {
       l.failReplayOffTitle,
       l.failReplayOffHint,
     ),
+    ObsFailureKind.soundNotOnAir => FailureText(l.soundNotOnAir(name ?? '')),
     ObsFailureKind.outputDisabled => FailureText(
       l.failOutputDisabledTitle,
       l.failOutputDisabledHint,

@@ -39,6 +39,10 @@ enum ObsFailureKind {
   /// Replay buffer turned off in the OBS settings, or not started.
   replayBufferOff,
 
+  /// OBS accepted "play" but nothing played: the media source is not in the
+  /// scene on air, and OBS only plays sources of active scenes.
+  soundNotOnAir,
+
   /// Live/recording is already running.
   outputAlreadyActive,
 

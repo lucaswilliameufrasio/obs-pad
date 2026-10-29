@@ -27,4 +27,8 @@ for _ in 1 2 3 4 5 6 7 8 9 10; do
   [ -e /tmp/.X11-unix/X99 ] && break
   sleep 0.5
 done
+# OBS Pad Desktop, when its Linux build is mounted (see run-tests.sh).
+if [ -x /opt/obs-pad-desktop/obs_pad_desktop ]; then
+  /opt/obs-pad-desktop/obs_pad_desktop > /tmp/obs-pad-desktop.log 2>&1 &
+fi
 exec obs --disable-shutdown-check --multi --minimize-to-tray "$@"

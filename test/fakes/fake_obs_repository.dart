@@ -214,7 +214,22 @@ class FakeObsRepository implements ObsRepository {
   Future<void> triggerMediaAction(
     String inputName,
     ObsMediaAction action,
-  ) async => calls.add('media $inputName ${action.name}');
+  ) async {
+    calls.add('media $inputName ${action.name}');
+    // Like OBS, when the source is in the scene on air.
+    if (action == ObsMediaAction.restart && playsOnRestart) {
+      scheduleMicrotask(() => emit(MediaPlaybackStarted(inputName)));
+    }
+  }
+
+  /// False = the sound is not in the scene on air: OBS emits nothing.
+  bool playsOnRestart = true;
+
+  @override
+  Future<void> addInputToScenes(
+    String inputName,
+    List<String> sceneNames,
+  ) async => calls.add('addToScenes $inputName ${sceneNames.join(',')}');
 
   @override
   Future<ObsMediaState> getMediaState(String inputName) async =>

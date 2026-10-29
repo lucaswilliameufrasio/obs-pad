@@ -667,6 +667,16 @@ class WebSocketObsRepository implements ObsRepository {
     return result;
   }
 
+  @override
+  Future<void> addInputToScenes(
+    String inputName,
+    List<String> sceneNames,
+  ) async {
+    for (final scene in sceneNames) {
+      await _ensureInScene(scene, inputName);
+    }
+  }
+
   Future<void> _ensureInScene(String sceneName, String sourceName) async {
     try {
       await _call('GetSceneItemId', {

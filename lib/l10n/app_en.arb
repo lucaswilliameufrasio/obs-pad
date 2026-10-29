@@ -465,5 +465,14 @@
   "failRecordPauseTitle": "OBS did not pause the recording",
   "failRecordPauseHint": "This happens when the recording uses the same quality as the live. In OBS: Settings › Output › Recording Quality: pick another option (e.g. \"High Quality\"). Then stop and start the recording again.",
   "failReplayOffTitle": "Replay Buffer is off",
-  "failReplayOffHint": "In OBS: Settings › Output › check \"Enable Replay Buffer\". Then click \"Start Replay Buffer\" on the main window."
+  "failReplayOffHint": "In OBS: Settings › Output › check \"Enable Replay Buffer\". Then click \"Start Replay Buffer\" on the main window.",
+  "soundNotOnAir": "OBS did not play \"{name}\": this sound is not in the scene on air, and OBS only plays sounds of the scenes on air.",
+  "soundAddToAllScenes": "Add to all scenes",
+  "@soundNotOnAir": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  }
 }

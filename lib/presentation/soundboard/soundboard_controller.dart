@@ -193,12 +193,44 @@ class SoundPlayer {
       // A missing duck target should not stop the sound from playing.
       if (failure.isConnectionProblem) rethrow;
     }
+    // OBS answers "ok" even when it cannot play the sound (not in the
+    // scene on air); only the playback event tells it really started.
+    final started = _waitForPlayback(pad.inputName);
     try {
       await _media(pad.inputName, ObsMediaAction.restart);
+      if (!await started.result) {
+        throw ObsFailure(ObsFailureKind.soundNotOnAir, resource: pad.inputName);
+      }
     } on ObsFailure {
+      started.cancel();
       _ignore(ducking.release(pad.inputName));
       rethrow;
     }
+  }
+
+  /// How long to wait for MediaInputPlaybackStarted (normally ~50 ms).
+  static const playbackStartTimeout = Duration(milliseconds: 2500);
+
+  ({Future<bool> result, void Function() cancel}) _waitForPlayback(
+    String inputName,
+  ) {
+    final completer = Completer<bool>();
+    late final StreamSubscription<ObsEvent> sub;
+    late final Timer timer;
+    void finish(bool value) {
+      if (completer.isCompleted) return;
+      timer.cancel();
+      unawaited(sub.cancel());
+      completer.complete(value);
+    }
+
+    sub = _ref.read(obsEventsProvider).listen((event) {
+      if (event is MediaPlaybackStarted && event.inputName == inputName) {
+        finish(true);
+      }
+    });
+    timer = Timer(playbackStartTimeout, () => finish(false));
+    return (result: completer.future, cancel: () => finish(false));
   }
 
   Future<void> stop(SoundPad pad) async {

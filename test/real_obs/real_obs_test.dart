@@ -13,6 +13,8 @@ library;
 
 import 'dart:async';
 import 'dart:io';
+import 'dart:math';
+import 'dart:typed_data';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:obs_pad/data/obs/websocket_obs_repository.dart';
@@ -22,6 +24,7 @@ import 'package:obs_pad/domain/obs_events.dart';
 import 'package:obs_pad/domain/obs_failure.dart';
 import 'package:obs_pad/domain/obs_models.dart';
 import 'package:obs_pad/domain/sound/ducking_controller.dart';
+import 'package:obs_pad_companion/obs_pad_companion.dart';
 import 'package:obs_websocket/obs_websocket.dart' as raw;
 
 final _env = Platform.environment;
@@ -29,6 +32,10 @@ final _enabled = _env.containsKey('OBS_PAD_REAL_OBS');
 final _host = _env['OBS_HOST'] ?? '127.0.0.1';
 final _port = int.parse(_env['OBS_PORT'] ?? '4455');
 final _password = _env['OBS_PASSWORD'] ?? 'obspad-test';
+
+/// OBS Pad Desktop runs in the container too (run-tests.sh sets it when the
+/// Linux build exists).
+final _companion = _env.containsKey('OBS_PAD_COMPANION');
 
 /// Container restarted by the reconnect test; empty = skip that test.
 final _container = _env['OBS_PAD_DOCKER_CONTAINER'] ?? '';
@@ -145,7 +152,11 @@ void main() {
     return;
   }
 
-  setUpAll(_prepareObs);
+  setUpAll(() async {
+    // flutter_test may fake HTTP; these tests talk to the real computer.
+    HttpOverrides.global = null;
+    await _prepareObs();
+  });
 
   group('connection test (onboarding step 4)', () {
     test('right password: reports the OBS and websocket versions', () async {
@@ -291,6 +302,46 @@ void main() {
       expect(peaks, isNotEmpty, reason: 'InputVolumeMeters never arrived');
       expect(peaks.reduce((a, b) => a > b ? a : b), greaterThan(0.01));
     });
+
+    test(
+      'sound outside the scene on air: OBS says ok but never plays',
+      () async {
+        // The app relies on this: no MediaInputPlaybackStarted means "not on
+        // air", and it offers to add the sound to every scene.
+        await repo.setCurrentProgramScene('Começando');
+        // During the fade both scenes are active; wait for it to end.
+        await Future<void>.delayed(const Duration(seconds: 1));
+        await repo.setupMediaSource(
+          const MediaSourceRequest(
+            inputName: 'Som - Só no Jogo',
+            filePath: _soundFile,
+            sceneName: 'Jogo',
+          ),
+        );
+        final started = _next<MediaPlaybackStarted>(
+          repo,
+          where: (e) => e.inputName == 'Som - Só no Jogo',
+          timeout: const Duration(seconds: 3),
+        );
+        await repo.triggerMediaAction(
+          'Som - Só no Jogo',
+          ObsMediaAction.restart,
+        );
+        await expectLater(started, throwsA(isA<TimeoutException>()));
+
+        // The fix the app offers.
+        await repo.addInputToScenes('Som - Só no Jogo', ['Começando']);
+        final startedNow = _next<MediaPlaybackStarted>(
+          repo,
+          where: (e) => e.inputName == 'Som - Só no Jogo',
+        );
+        await repo.triggerMediaAction(
+          'Som - Só no Jogo',
+          ObsMediaAction.restart,
+        );
+        await startedNow;
+      },
+    );
 
     test('missing media input gives resourceNotFound', () async {
       await expectLater(
@@ -472,6 +523,75 @@ void main() {
     });
   });
 
+  group('OBS Pad Desktop (app on the OBS computer)', () {
+    late WebSocketObsRepository repo;
+
+    setUp(() async {
+      repo = WebSocketObsRepository();
+      await repo.connect(_config());
+    });
+
+    tearDown(() => repo.disconnect());
+
+    test('the phone finds the computer on the network', () async {
+      final found = await discoverComputers(
+        broadcast: false,
+        extraTargets: [InternetAddress(_host)],
+        timeout: const Duration(seconds: 1),
+      );
+      expect(found, isNotEmpty);
+      expect(found.first.announcement.obsPort, 4455);
+      expect(found.first.announcement.obsServerEnabled, isTrue);
+    });
+
+    test('wrong OBS password on the phone is refused', () async {
+      final client = CompanionClient(host: _host, secret: 'errada');
+      addTearDown(client.close);
+      expect((await client.info()).ready, isTrue);
+      await expectLater(
+        client.listSounds(),
+        throwsA(
+          isA<CompanionException>().having(
+            (e) => e.kind,
+            'kind',
+            CompanionErrorKind.unauthorized,
+          ),
+        ),
+      );
+    });
+
+    test('send a sound from the phone and play it in OBS', () async {
+      final client = CompanionClient(host: _host, secret: _password);
+      addTearDown(client.close);
+      final saved = await client.uploadSound('Vinheta do celular.wav', _wav());
+      expect(saved.path, startsWith('/home/obs/OBS Pad/Sons/'));
+      expect(
+        (await client.listSounds()).sounds.map((s) => s.path),
+        contains(saved.path),
+      );
+
+      await repo.setupMediaSource(
+        MediaSourceRequest(
+          inputName: 'Som - Vinheta',
+          filePath: saved.path,
+          sceneName: 'Jogo',
+          alsoAddToScenes: const ['Começando', 'Intervalo'],
+        ),
+      );
+      final started = _next<MediaPlaybackStarted>(
+        repo,
+        where: (e) => e.inputName == 'Som - Vinheta',
+      );
+      final ended = _next<MediaPlaybackEnded>(
+        repo,
+        where: (e) => e.inputName == 'Som - Vinheta',
+      );
+      await repo.triggerMediaAction('Som - Vinheta', ObsMediaAction.restart);
+      await started;
+      await ended;
+    });
+  }, skip: _companion ? false : 'build companion/ for Linux (run-tests.sh)');
+
   test('reconnects by itself when OBS restarts', () async {
     final repo = WebSocketObsRepository();
     await repo.connect(_config());
@@ -494,4 +614,29 @@ void main() {
     expect((await changed).sceneName, 'Intervalo');
     await repo.disconnect();
   }, skip: _container.isEmpty ? 'set OBS_PAD_DOCKER_CONTAINER' : false);
+}
+
+/// One second of a 660 Hz tone, 16-bit mono WAV.
+List<int> _wav() {
+  const rate = 48000;
+  final samples = ByteData(rate * 2);
+  for (var i = 0; i < rate; i++) {
+    final value = (sin(2 * pi * 660 * i / rate) * 12000).round();
+    samples.setInt16(i * 2, value, Endian.little);
+  }
+  final header = ByteData(44)
+    ..setUint32(0, 0x52494646) // RIFF
+    ..setUint32(4, 36 + rate * 2, Endian.little)
+    ..setUint32(8, 0x57415645) // WAVE
+    ..setUint32(12, 0x666d7420) // fmt
+    ..setUint32(16, 16, Endian.little)
+    ..setUint16(20, 1, Endian.little)
+    ..setUint16(22, 1, Endian.little)
+    ..setUint32(24, rate, Endian.little)
+    ..setUint32(28, rate * 2, Endian.little)
+    ..setUint16(32, 2, Endian.little)
+    ..setUint16(34, 16, Endian.little)
+    ..setUint32(36, 0x64617461) // data
+    ..setUint32(40, rate * 2, Endian.little);
+  return [...header.buffer.asUint8List(), ...samples.buffer.asUint8List()];
 }

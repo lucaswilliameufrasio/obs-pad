@@ -1015,4 +1015,12 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get failReplayOffHint =>
       'In OBS: Settings › Output › check \"Enable Replay Buffer\". Then click \"Start Replay Buffer\" on the main window.';
+
+  @override
+  String soundNotOnAir(String name) {
+    return 'OBS did not play \"$name\": this sound is not in the scene on air, and OBS only plays sounds of the scenes on air.';
+  }
+
+  @override
+  String get soundAddToAllScenes => 'Add to all scenes';
 }

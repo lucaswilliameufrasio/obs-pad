@@ -1891,6 +1891,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'In OBS: Settings › Output › check \"Enable Replay Buffer\". Then click \"Start Replay Buffer\" on the main window.'**
   String get failReplayOffHint;
+
+  /// No description provided for @soundNotOnAir.
+  ///
+  /// In en, this message translates to:
+  /// **'OBS did not play \"{name}\": this sound is not in the scene on air, and OBS only plays sounds of the scenes on air.'**
+  String soundNotOnAir(String name);
+
+  /// No description provided for @soundAddToAllScenes.
+  ///
+  /// In en, this message translates to:
+  /// **'Add to all scenes'**
+  String get soundAddToAllScenes;
 }
 
 class _AppLocalizationsDelegate
