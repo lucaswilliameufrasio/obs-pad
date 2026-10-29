@@ -1,0 +1,8 @@
+{
+  "type": "rtmp_custom",
+  "settings": {
+    "server": "rtmp://127.0.0.1:1935/live",
+    "key": "test",
+    "use_auth": false
+  }
+}

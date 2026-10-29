@@ -1001,4 +1001,18 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get metricsForegroundHint =>
       'Alerts only work while OBS Pad is open with the screen on. With the app closed or in the background, nothing is watching your live.';
+
+  @override
+  String get failRecordPauseTitle => 'OBS did not pause the recording';
+
+  @override
+  String get failRecordPauseHint =>
+      'This happens when the recording uses the same quality as the live. In OBS: Settings › Output › Recording Quality: pick another option (e.g. \"High Quality\"). Then stop and start the recording again.';
+
+  @override
+  String get failReplayOffTitle => 'Replay Buffer is off';
+
+  @override
+  String get failReplayOffHint =>
+      'In OBS: Settings › Output › check \"Enable Replay Buffer\". Then click \"Start Replay Buffer\" on the main window.';
 }

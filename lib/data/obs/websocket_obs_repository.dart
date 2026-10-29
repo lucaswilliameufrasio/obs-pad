@@ -258,7 +258,11 @@ class WebSocketObsRepository implements ObsRepository {
         state: data.str('outputState'),
       ),
       'RecordStateChanged' => RecordStateChanged(
-        active: data.boolean('outputActive'),
+        // OBS sends outputActive: false while paused, but it is still
+        // recording.
+        active:
+            data.boolean('outputActive') ||
+            data.str('outputState') == 'OBS_WEBSOCKET_OUTPUT_PAUSED',
         state: data.str('outputState'),
       ),
       'ReplayBufferStateChanged' => ReplayBufferStateChanged(
@@ -515,10 +519,34 @@ class WebSocketObsRepository implements ObsRepository {
   Future<void> toggleRecord() => _call('ToggleRecord');
 
   @override
-  Future<void> toggleRecordPause() => _call('ToggleRecordPause');
+  Future<void> toggleRecordPause() async {
+    final before = await getRecordStatus();
+    await _call('ToggleRecordPause');
+    // OBS answers "paused" even when it can't pause (recording sharing the
+    // live encoder), so check that it really changed.
+    for (var i = 0; i < 10; i++) {
+      await Future<void>.delayed(const Duration(milliseconds: 100));
+      if ((await getRecordStatus()).paused != before.paused) return;
+    }
+    throw const ObsFailure(ObsFailureKind.recordPauseUnsupported);
+  }
 
   @override
-  Future<void> saveReplayBuffer() => _call('SaveReplayBuffer');
+  Future<void> saveReplayBuffer() async {
+    try {
+      await _call('SaveReplayBuffer');
+    } on ObsFailure catch (failure) {
+      // "Replay buffer is not available" (off in settings) or not started.
+      if (failure.kind == ObsFailureKind.invalidState ||
+          failure.kind == ObsFailureKind.outputNotActive) {
+        throw ObsFailure(
+          ObsFailureKind.replayBufferOff,
+          detail: failure.detail,
+        );
+      }
+      rethrow;
+    }
+  }
 
   @override
   Future<List<String>> getHotkeys() async {
@@ -627,6 +655,15 @@ class WebSocketObsRepository implements ObsRepository {
       'inputName': name,
       'mediaAction': ObsMediaAction.stop.protocolValue,
     }, name);
+    // The stop is applied asynchronously (~100 ms). A play sent before that
+    // is cut off right away, so wait until the source really stopped.
+    for (var i = 0; i < 20; i++) {
+      final state = await getMediaState(name);
+      if (state != ObsMediaState.playing && state != ObsMediaState.opening) {
+        break;
+      }
+      await Future<void>.delayed(const Duration(milliseconds: 100));
+    }
     return result;
   }
 

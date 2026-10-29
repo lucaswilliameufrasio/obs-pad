@@ -55,6 +55,14 @@ FailureText describeFailure(AppLocalizations l, Object error) {
     ObsFailureKind.alreadyExists => FailureText(l.failAlreadyExists),
     ObsFailureKind.outputAlreadyActive => FailureText(l.failOutputActive),
     ObsFailureKind.outputNotActive => FailureText(l.failOutputNotActive),
+    ObsFailureKind.recordPauseUnsupported => FailureText(
+      l.failRecordPauseTitle,
+      l.failRecordPauseHint,
+    ),
+    ObsFailureKind.replayBufferOff => FailureText(
+      l.failReplayOffTitle,
+      l.failReplayOffHint,
+    ),
     ObsFailureKind.outputDisabled => FailureText(
       l.failOutputDisabledTitle,
       l.failOutputDisabledHint,

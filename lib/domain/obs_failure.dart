@@ -32,6 +32,13 @@ enum ObsFailureKind {
   /// Trying to create something that already exists.
   alreadyExists,
 
+  /// OBS accepted the pause but did not pause: the recording shares the
+  /// live encoder ("Recording quality: same as stream"), which can't pause.
+  recordPauseUnsupported,
+
+  /// Replay buffer turned off in the OBS settings, or not started.
+  replayBufferOff,
+
   /// Live/recording is already running.
   outputAlreadyActive,
 

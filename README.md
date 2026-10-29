@@ -73,7 +73,8 @@ O app não usa servidor: conversa direto com o OBS e guarda tudo no celular.
 - **Sons**: o arquivo precisa já estar no PC e o caminho é digitado — o obs-websocket não permite navegar nas pastas nem enviar arquivos.
 - **Layouts e sons ficam só neste celular**: não há backup nem sincronização entre aparelhos.
 - **Idiomas**: português e inglês.
-- **Ainda não validado**: os testes usam um servidor obs-websocket simulado; falta testar com o OBS real e em aparelhos. O app iOS não foi compilado, e o APK de release usa a chave de debug.
+- **Pausar a gravação**: o OBS só pausa quando a gravação tem qualidade própria (Configurações › Saída › Qualidade da gravação diferente de "Mesma da transmissão"). Com o padrão do OBS, o app avisa e explica como mudar.
+- **Ainda não validado em aparelhos**: o app é testado contra um OBS real (veja *Testes contra o OBS real*), mas ainda não em celulares. O app iOS não foi compilado, e o APK de release usa a chave de debug.
 
 ### O que precisaria de algo além do app
 
@@ -143,3 +144,22 @@ lib/
 - `test/websocket_obs_repository_test.dart` — o repositório real contra um servidor obs-websocket 5 falso (handshake com senha, close 4009, porta fechada, recurso inexistente, assinaturas, reconexão).
 - `test/onboarding_wizard_test.dart` — widget tests do guia de 4 passos.
 - `test/home_features_test.dart` — botões, sincronização por eventos, mixer, soundboard e "Adicionar som".
+- `test/real_obs/real_obs_test.dart` — contra um **OBS Studio de verdade** (veja abaixo).
+
+### Testes contra o OBS real
+
+`tool/obs-docker` tem uma imagem Docker com o OBS Studio rodando sem tela (Xvfb), o obs-websocket ligado e um servidor RTMP local (nginx-rtmp) para fazer lives de verdade:
+
+```bash
+tool/obs-docker/run-tests.sh          # sobe o OBS, roda test/real_obs e remove o container
+KEEP=1 tool/obs-docker/run-tests.sh   # deixa o OBS rodando (porta 4455, senha obspad-test)
+```
+
+Cobre: teste de conexão (senha errada, porta fechada), cenas, fontes, "Adicionar som" e tocar o som (com medidores de volume), mixer, ducking, gravação (pausar, retomar, parar), live com cálculo de bitrate, Replay Buffer desligado, atalhos e reconexão depois de o OBS reiniciar. O CI roda esses testes a cada push.
+
+Problemas que só apareceram com o OBS real (e foram corrigidos):
+
+- Com a qualidade de gravação padrão ("mesma da transmissão"), o OBS responde que pausou mas continua gravando. O app confere e explica como resolver.
+- Ao pausar, o OBS manda `outputActive: false`; o app mostrava a gravação como parada.
+- Uma fonte de mídia recém-criada leva ~100 ms para obedecer o "parar"; tocar logo em seguida era cortado na hora.
+- Replay Buffer desligado vinha como um erro genérico; agora explica onde ligar.

@@ -294,5 +294,9 @@
   "manualStep4": "No Mixer de áudio, clique em ⋮ (ou na engrenagem) > Propriedades avançadas de áudio. Na linha do seu som, confira que a Faixa 1 está marcada.",
   "manualStep5": "Opcional: mude o Monitoramento de áudio para \"Monitorar e enviar\" para ouvir no seu fone.",
   "manualStep6": "De volta aqui, escolha \"Fonte que já existe\" e selecione a fonte que você criou.",
-  "metricsForegroundHint": "Os alertas só funcionam com o OBS Pad aberto e a tela ligada. Com o app fechado ou em segundo plano, ninguém está vigiando a live."
+  "metricsForegroundHint": "Os alertas só funcionam com o OBS Pad aberto e a tela ligada. Com o app fechado ou em segundo plano, ninguém está vigiando a live.",
+  "failRecordPauseTitle": "O OBS não pausou a gravação",
+  "failRecordPauseHint": "Isso acontece quando a gravação usa a mesma qualidade da live. No OBS: Configurações › Saída › Qualidade da gravação: escolha outra opção (ex.: \"Alta qualidade\"). Depois pare e comece a gravação de novo.",
+  "failReplayOffTitle": "Replay Buffer desligado",
+  "failReplayOffHint": "No OBS: Configurações › Saída › marque \"Ativar Replay Buffer\". Depois clique em \"Iniciar Replay Buffer\" na tela principal."
 }
