@@ -6,7 +6,7 @@ import 'package:obs_pad_companion/obs_pad_companion.dart';
 
 import 'system.dart';
 
-const appVersion = '1.0.0';
+const appVersion = '0.1.0';
 
 enum EnableResult { enabled, obsRunning, failed }
 

@@ -1,18 +1,50 @@
 name: Build apps
 
-# Manual run: builds everything and keeps the files as workflow artifacts.
-# Pushing a tag like v1.0.0: also attaches them to a GitHub release.
+# - Push to main: rebuilds everything and replaces the "dev" pre-release
+#   (fixed download links, never marked as the latest release).
+# - Tag v0.x.y (or any v*): a numbered release; 0.x and -suffix tags are
+#   marked as pre-releases.
+# - Manual run: only builds, files kept as workflow artifacts.
 on:
   workflow_dispatch:
   push:
+    branches: [main]
     tags: ['v*']
 
 permissions:
   contents: write
 
+# A newer push to main replaces an unfinished dev build.
+concurrency:
+  group: build-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
-  android:
+  version:
     runs-on: ubuntu-latest
+    outputs:
+      name: ${{ steps.v.outputs.name }}
+      number: ${{ steps.v.outputs.number }}
+    steps:
+      - uses: actions/checkout@v4
+      - id: v
+        run: |
+          base=$(sed -n 's/^version: *\([^+]*\).*/\1/p' pubspec.yaml)
+          if [[ "$GITHUB_REF" == refs/tags/v* ]]; then
+            name="${GITHUB_REF_NAME#v}"
+          else
+            name="$base-dev.${{ github.run_number }}"
+          fi
+          echo "name=$name" >> "$GITHUB_OUTPUT"
+          # Always increasing, so Android installs each build over the last.
+          echo "number=${{ github.run_number }}" >> "$GITHUB_OUTPUT"
+          echo "Version $name (${{ github.run_number }})"
+
+  android:
+    needs: version
+    runs-on: ubuntu-latest
+    outputs:
+      signed: ${{ steps.key.outputs.signed }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-java@v4
@@ -24,7 +56,29 @@ jobs:
           flutter-version: 3.47.7
           channel: stable
           cache: true
-      - run: flutter build apk --release
+      - name: Signing key (falls back to the debug key without the secrets)
+        id: key
+        env:
+          KEYSTORE_BASE64: ${{ secrets.ANDROID_DEV_KEYSTORE_BASE64 }}
+          KEYSTORE_PASSWORD: ${{ secrets.ANDROID_DEV_KEYSTORE_PASSWORD }}
+        run: |
+          if [ -z "$KEYSTORE_BASE64" ]; then
+            echo "::warning::No signing secrets: APK signed with a throwaway debug key (updates will not install over it)."
+            echo "signed=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          echo "signed=true" >> "$GITHUB_OUTPUT"
+          echo "$KEYSTORE_BASE64" | base64 -d > "$RUNNER_TEMP/obs-pad-dev.jks"
+          cat > android/key.properties <<EOF
+          storeFile=$RUNNER_TEMP/obs-pad-dev.jks
+          storePassword=$KEYSTORE_PASSWORD
+          keyAlias=obs-pad-dev
+          keyPassword=$KEYSTORE_PASSWORD
+          EOF
+      - run: >-
+          flutter build apk --release
+          --build-name ${{ needs.version.outputs.name }}
+          --build-number ${{ needs.version.outputs.number }}
       - run: mv build/app/outputs/flutter-apk/app-release.apk obs-pad-android.apk
       - uses: actions/upload-artifact@v4
         with:
@@ -32,6 +86,7 @@ jobs:
           path: obs-pad-android.apk
 
   desktop-windows:
+    needs: version
     runs-on: windows-latest
     defaults:
       run:
@@ -43,7 +98,7 @@ jobs:
           flutter-version: 3.47.7
           channel: stable
           cache: true
-      - run: flutter build windows --release
+      - run: flutter build windows --release --build-number ${{ needs.version.outputs.number }}
       - name: Zip
         shell: pwsh
         run: Compress-Archive -Path build/windows/x64/runner/Release/* -DestinationPath ../obs-pad-desktop-windows.zip
@@ -53,6 +108,7 @@ jobs:
           path: obs-pad-desktop-windows.zip
 
   desktop-macos:
+    needs: version
     runs-on: macos-latest
     defaults:
       run:
@@ -64,7 +120,7 @@ jobs:
           flutter-version: 3.47.7
           channel: stable
           cache: true
-      - run: flutter build macos --release
+      - run: flutter build macos --release --build-number ${{ needs.version.outputs.number }}
       - name: Zip
         run: ditto -c -k --keepParent "build/macos/Build/Products/Release/OBS Pad Desktop.app" ../obs-pad-desktop-macos.zip
       - uses: actions/upload-artifact@v4
@@ -73,6 +129,7 @@ jobs:
           path: obs-pad-desktop-macos.zip
 
   desktop-linux:
+    needs: version
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -87,7 +144,7 @@ jobs:
       - run: |
           sudo apt-get update
           sudo apt-get install -y clang cmake ninja-build pkg-config libgtk-3-dev
-      - run: flutter build linux --release
+      - run: flutter build linux --release --build-number ${{ needs.version.outputs.number }}
       - run: tar -czf ../obs-pad-desktop-linux.tar.gz -C build/linux/x64/release bundle
       - uses: actions/upload-artifact@v4
         with:
@@ -95,17 +152,41 @@ jobs:
           path: obs-pad-desktop-linux.tar.gz
 
   release:
-    if: startsWith(github.ref, 'refs/tags/v')
-    needs: [android, desktop-windows, desktop-macos, desktop-linux]
+    if: github.event_name == 'push'
+    needs: [version, android, desktop-windows, desktop-macos, desktop-linux]
     runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ github.token }}
+      VERSION: ${{ needs.version.outputs.name }}
     steps:
+      - uses: actions/checkout@v4
       - uses: actions/download-artifact@v4
         with:
+          path: dist
           merge-multiple: true
-      - uses: softprops/action-gh-release@v2
-        with:
-          files: |
-            obs-pad-android.apk
-            obs-pad-desktop-windows.zip
-            obs-pad-desktop-macos.zip
-            obs-pad-desktop-linux.tar.gz
+      - name: Dev pre-release (push to main)
+        # Only with the fixed key: a throwaway-key APK could not be updated.
+        if: github.ref == 'refs/heads/main' && needs.android.outputs.signed == 'true'
+        run: |
+          # The "dev" tag follows main; the release is recreated each time so
+          # the download links stay the same.
+          git tag -f dev "$GITHUB_SHA"
+          git push -f origin refs/tags/dev
+          gh release delete dev --yes 2>/dev/null || true
+          gh release create dev dist/* \
+            --prerelease --latest=false \
+            --title "Versão de teste $VERSION" \
+            --notes "Build automático da \`main\` ($(git rev-parse --short HEAD)). **Versão de teste**: pode ter bugs e mudar a qualquer momento.
+
+          - **Celular (Android)**: \`obs-pad-android.apk\`. Cada versão de teste instala por cima da anterior, sem perder seus botões e sons.
+          - **Computador (opcional)**: OBS Pad Desktop para Windows, macOS ou Linux. Ainda sem assinatura digital: o Windows e o macOS avisam na primeira vez (veja o README)."
+      - name: Numbered release (tag v*)
+        if: startsWith(github.ref, 'refs/tags/v')
+        run: |
+          flags=""
+          # 0.x and -beta/-rc versions are pre-releases.
+          if [[ "$VERSION" == 0.* || "$VERSION" == *-* ]]; then
+            flags="--prerelease --latest=false"
+          fi
+          gh release create "$GITHUB_REF_NAME" dist/* $flags \
+            --title "OBS Pad $VERSION" --generate-notes

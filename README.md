@@ -8,6 +8,13 @@ Controle remoto do **OBS Studio** pelo celular — uma alternativa ao Stream Dec
 - **Métricas**: status da live/gravação, tempo no ar, CPU, memória, FPS, frames perdidos, congestionamento, bitrate e gráficos de 2 a 5 minutos, com alerta (cor + vibração).
 - Os botões acendem sozinhos conforme o OBS muda (cena no ar, live, gravação, mute, som tocando).
 
+## Baixar
+
+Ainda não há versão final. A **versão de teste** mais recente da `main` fica sempre em [Releases › Versão de teste (`dev`)](https://github.com/lucaswilliameufrasio/obs-pad/releases/tag/dev):
+
+- **Android**: `obs-pad-android.apk` — copie para o celular e instale (permita "fontes desconhecidas"). Cada versão de teste instala por cima da anterior, sem perder botões e sons.
+- **Computador (opcional)**: OBS Pad Desktop para Windows, macOS ou Linux (veja a seção 4).
+
 ---
 
 ## 1. Configurar o OBS (no computador)
@@ -73,7 +80,7 @@ Um app pequeno para o computador do OBS (Windows, macOS ou Linux). Ele não é o
 
 Ele usa a porta **4457** (TCP e UDP), só na rede local. Cada pedido do celular é assinado com a senha do OBS, que o app lê das configurações do OBS no próprio computador: não há pareamento extra e a senha não passa pela rede.
 
-Para baixar: aba *Releases* do GitHub (quando houver uma versão) ou *Actions › Build apps* (arquivos de cada execução). O app ainda não é assinado digitalmente: o Windows (SmartScreen) e o macOS (Gatekeeper) vão avisar na primeira vez — no Windows, *Mais informações › Executar assim mesmo*; no macOS, botão direito no app › *Abrir*.
+Para baixar: veja *Baixar* no começo deste README. O app ainda não é assinado digitalmente: o Windows (SmartScreen) e o macOS (Gatekeeper) vão avisar na primeira vez — no Windows, *Mais informações › Executar assim mesmo*; no macOS, botão direito no app › *Abrir*.
 
 ## 5. Limitações conhecidas
 
@@ -90,7 +97,7 @@ O app do celular não usa servidor: conversa direto com o OBS e guarda tudo no c
 - **Layouts e sons ficam só neste celular**: não há backup nem sincronização entre aparelhos.
 - **Idiomas**: português e inglês.
 - **Pausar a gravação**: o OBS só pausa quando a gravação tem qualidade própria (Configurações › Saída › Qualidade da gravação diferente de "Mesma da transmissão"). Com o padrão do OBS, o app avisa e explica como mudar.
-- **Ainda não validado em aparelhos**: o celular e o OBS Pad Desktop são testados contra um OBS real (veja *Testes contra o OBS real*), mas ainda não em celulares, nem o app do PC em Windows/macOS (lá ele só é compilado). O app iOS não foi compilado, e o APK de release usa a chave de debug.
+- **Ainda não validado em aparelhos**: o celular e o OBS Pad Desktop são testados contra um OBS real (veja *Testes contra o OBS real*), mas ainda não em celulares, nem o app do PC em Windows/macOS (lá ele só é compilado). O app iOS não foi compilado, e o APK é assinado com uma chave de testes (não a definitiva da Play Store).
 
 ### O que ainda precisaria de algo além do app
 
@@ -125,7 +132,24 @@ flutter build apk --release
 # arquivo: build/app/outputs/flutter-apk/app-release.apk
 ```
 
-Copie o APK para o celular e instale (o Android vai pedir para permitir "fontes desconhecidas"). O build release usa a chave de debug; para publicar na Play Store, configure uma chave própria em `android/app/build.gradle.kts`.
+**Assinatura**: se existir `android/key.properties` (nunca vai para o git), o APK é assinado com a chave que ele indica; senão, com a chave de debug da máquina.
+
+```properties
+storeFile=/caminho/para/obs-pad-dev.jks
+storePassword=...
+keyAlias=obs-pad-dev
+keyPassword=...
+```
+
+### Versões e builds automáticos
+
+`.github/workflows/build.yml` compila o APK e o OBS Pad Desktop (Windows, macOS, Linux):
+
+- **Push na `main`** → substitui o pré-lançamento **`dev`** (links fixos, nunca marcado como "Latest"). Versão `0.1.0-dev.N`, com `versionCode` = número da execução, sempre crescente.
+- **Tag `v0.x.y`** (ou `v1.0.0-rc.1`) → release numerado, marcado como pré-lançamento enquanto for `0.x` ou tiver sufixo.
+- **Execução manual** → só gera os arquivos (*Actions › Build apps*).
+
+O APK de teste é assinado com uma **chave de testes fixa**, guardada nos secrets do repositório (`ANDROID_DEV_KEYSTORE_BASE64`, `ANDROID_DEV_KEYSTORE_PASSWORD`, alias `obs-pad-dev`), para cada versão instalar por cima da anterior. Sem esses secrets, o build usa uma chave descartável e o pré-lançamento `dev` não é publicado. A chave da Play Store, quando houver, deve ser outra.
 
 ### Arquitetura
 
