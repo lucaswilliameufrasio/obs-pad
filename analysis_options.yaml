@@ -13,6 +13,9 @@ analyzer:
     - build/**
     - android/**
     - ios/**
+    # Analyzed on their own (own pubspec and dependencies).
+    - companion/**
+    - packages/**
 
 linter:
   rules:
