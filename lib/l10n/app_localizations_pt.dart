@@ -457,7 +457,7 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get settingsKeepScreenOnHint =>
-      'A tela do celular não apaga enquanto o OBS Pad estiver aberto.';
+      'A tela do celular não apaga enquanto o OBS Pad estiver aberto. Se a tela apagar ou você trocar de app, o celular corta a conexão com o OBS: macros em andamento e alertas param até você voltar.';
 
   @override
   String get settingsHaptics => 'Vibrar ao tocar';
@@ -961,7 +961,7 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get duckingHelp =>
-      'Ex.: abaixa o mic ou a música e volta ao normal quando o som termina.';
+      'Ex.: abaixa o mic ou a música e volta ao normal quando o som termina. Se a conexão cair no meio do som, o volume volta ao normal assim que o OBS Pad reconectar.';
 
   @override
   String get duckingTarget => 'Áudio para abaixar';
@@ -997,4 +997,8 @@ class AppLocalizationsPt extends AppLocalizations {
   @override
   String get manualStep6 =>
       'De volta aqui, escolha \"Fonte que já existe\" e selecione a fonte que você criou.';
+
+  @override
+  String get metricsForegroundHint =>
+      'Os alertas só funcionam com o OBS Pad aberto e a tela ligada. Com o app fechado ou em segundo plano, ninguém está vigiando a live.';
 }

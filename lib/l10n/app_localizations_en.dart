@@ -460,7 +460,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get settingsKeepScreenOnHint =>
-      'The phone screen will not turn off while OBS Pad is open.';
+      'The phone screen will not turn off while OBS Pad is open. If the screen turns off or you switch apps, the phone cuts the connection to OBS: running macros and alerts stop until you come back.';
 
   @override
   String get settingsHaptics => 'Vibrate on touch';
@@ -961,7 +961,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get duckingHelp =>
-      'E.g. lower the mic or the music, and bring it back when the sound ends.';
+      'E.g. lower the mic or the music, and bring it back when the sound ends. If the connection drops mid-sound, the volume goes back to normal as soon as OBS Pad reconnects.';
 
   @override
   String get duckingTarget => 'Audio to lower';
@@ -997,4 +997,8 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get manualStep6 =>
       'Back here, choose \"Existing source\" and pick the source you created.';
+
+  @override
+  String get metricsForegroundHint =>
+      'Alerts only work while OBS Pad is open with the screen on. With the app closed or in the background, nothing is watching your live.';
 }

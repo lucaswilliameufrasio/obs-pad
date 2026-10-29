@@ -59,6 +59,29 @@ O áudio **não sai do celular**: os arquivos ficam no PC e o OBS toca. Em **Son
 
 Se algo falhar, o app mostra o passo a passo para fazer manualmente no OBS e depois usar **Fonte que já existe**.
 
+**Ducking**: o volume original fica salvo no celular enquanto o som toca. Se a conexão cair ou o app for fechado no meio do som, o volume é restaurado assim que o app reconectar ao OBS. Se o som ainda estiver tocando nesse momento, a música volta ao normal antes de ele acabar.
+
+## 4. Limitações conhecidas
+
+O app não usa servidor: conversa direto com o OBS e guarda tudo no celular.
+
+- **Tamanho dos botões**: todos os botões ocupam uma célula; o tamanho muda o ícone e o texto, e o número de colunas (2 a 6) é escolhido por layout.
+- **App aberto e na tela**: com o app em segundo plano o celular derruba a conexão; alertas de métricas, macros em andamento e "segurar para tocar" param.
+- **Bateria**: as métricas são lidas a cada 1 s enquanto o app está conectado, em qualquer aba (para o alerta aparecer em todas).
+- **IP digitado à mão**: o OBS não se anuncia na rede, então o app não encontra o PC sozinho.
+- **Atalhos**: só os que o OBS lista pelo nome; combinações de teclas puras não são suportadas.
+- **Sons**: o arquivo precisa já estar no PC e o caminho é digitado — o obs-websocket não permite navegar nas pastas nem enviar arquivos.
+- **Layouts e sons ficam só neste celular**: não há backup nem sincronização entre aparelhos.
+- **Idiomas**: português e inglês.
+- **Ainda não validado**: os testes usam um servidor obs-websocket simulado; falta testar com o OBS real e em aparelhos. O app iOS não foi compilado, e o APK de release usa a chave de debug.
+
+### O que precisaria de algo além do app
+
+- **Escolher/enviar sons pelo celular**: um pequeno programa no PC que receba o arquivo ou mostre as pastas.
+- **Alertas com o app fechado**: algo rodando no PC (ou um serviço de push) vigiando o OBS.
+- **Sincronizar layouts entre aparelhos**: um servidor — ou, sem servidor, exportar/importar um arquivo.
+- **Acesso de fora sem VPN**: daria com um servidor intermediário, mas a VPN é mais simples e mais segura.
+
 ---
 
 ## Para desenvolvedores
@@ -116,7 +139,7 @@ lib/
 
 - `test/metrics_calculator_test.dart` — bitrate, frames perdidos, alertas, janela.
 - `test/obs_error_mapper_test.dart` — erros de socket/protocolo → mensagens humanas; validação de IP.
-- `test/ducking_and_audio_test.dart` — ducking e conversões de volume.
+- `test/ducking_and_audio_test.dart` — ducking (inclusive restaurar após queda de conexão ou app fechado) e conversões de volume.
 - `test/websocket_obs_repository_test.dart` — o repositório real contra um servidor obs-websocket 5 falso (handshake com senha, close 4009, porta fechada, recurso inexistente, assinaturas, reconexão).
 - `test/onboarding_wizard_test.dart` — widget tests do guia de 4 passos.
 - `test/home_features_test.dart` — botões, sincronização por eventos, mixer, soundboard e "Adicionar som".

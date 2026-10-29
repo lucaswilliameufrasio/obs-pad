@@ -132,7 +132,7 @@
   "settingsLanguage": "Idioma",
   "languageSystem": "Igual ao celular",
   "settingsKeepScreenOn": "Manter a tela ligada",
-  "settingsKeepScreenOnHint": "A tela do celular não apaga enquanto o OBS Pad estiver aberto.",
+  "settingsKeepScreenOnHint": "A tela do celular não apaga enquanto o OBS Pad estiver aberto. Se a tela apagar ou você trocar de app, o celular corta a conexão com o OBS: macros em andamento e alertas param até você voltar.",
   "settingsHaptics": "Vibrar ao tocar",
   "settingsGuide": "Ver o guia de configuração de novo",
   "obsMockTitle": "Configurações do Servidor WebSocket",
@@ -284,7 +284,7 @@
   "soundVolume": "Ajustar volume",
   "soundVolumeKeep": "Manter o volume que está no OBS",
   "duckingTitle": "Abaixar outro áudio enquanto toca",
-  "duckingHelp": "Ex.: abaixa o mic ou a música e volta ao normal quando o som termina.",
+  "duckingHelp": "Ex.: abaixa o mic ou a música e volta ao normal quando o som termina. Se a conexão cair no meio do som, o volume volta ao normal assim que o OBS Pad reconectar.",
   "duckingTarget": "Áudio para abaixar",
   "duckingAmount": "Abaixar {db} dB",
   "manualTitle": "Fazer manualmente no OBS",
@@ -293,5 +293,6 @@
   "manualStep3": "Marque \"Fechar arquivo quando inativo\" e desmarque \"Reiniciar reprodução quando a fonte ficar ativa\". Clique em OK.",
   "manualStep4": "No Mixer de áudio, clique em ⋮ (ou na engrenagem) > Propriedades avançadas de áudio. Na linha do seu som, confira que a Faixa 1 está marcada.",
   "manualStep5": "Opcional: mude o Monitoramento de áudio para \"Monitorar e enviar\" para ouvir no seu fone.",
-  "manualStep6": "De volta aqui, escolha \"Fonte que já existe\" e selecione a fonte que você criou."
+  "manualStep6": "De volta aqui, escolha \"Fonte que já existe\" e selecione a fonte que você criou.",
+  "metricsForegroundHint": "Os alertas só funcionam com o OBS Pad aberto e a tela ligada. Com o app fechado ou em segundo plano, ninguém está vigiando a live."
 }

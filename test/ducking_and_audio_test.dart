@@ -1,6 +1,20 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:obs_pad/domain/audio_math.dart';
+import 'package:obs_pad/domain/obs_failure.dart';
 import 'package:obs_pad/domain/sound/ducking_controller.dart';
+
+class _Memory implements DuckingMemory {
+  _Memory([Map<String, double>? initial]) : saved = {...?initial};
+
+  Map<String, double> saved;
+
+  @override
+  Map<String, double> load() => {...saved};
+
+  @override
+  Future<void> save(Map<String, double> originals) async =>
+      saved = {...originals};
+}
 
 void main() {
   group('audio math', () {
@@ -93,5 +107,87 @@ void main() {
       expect(volumes, {'Mic': 1.0, 'Música': 0.5});
       expect(ducking.duckedTargets, isEmpty);
     });
+  });
+
+  group('DuckingController survives connection loss', () {
+    late Map<String, double> volumes;
+    late _Memory memory;
+    late bool offline;
+
+    DuckingController controller() => DuckingController(
+      readVolume: (name) async => volumes[name]!,
+      writeVolume: (name, mul) async {
+        if (offline) throw const ObsFailure(ObsFailureKind.notConnected);
+        if (!volumes.containsKey(name)) {
+          throw ObsFailure(ObsFailureKind.resourceNotFound, resource: name);
+        }
+        volumes[name] = mul;
+      },
+      memory: memory,
+    );
+
+    setUp(() {
+      volumes = {'Música': 0.5};
+      memory = _Memory();
+      offline = false;
+    });
+
+    test('original volume is saved while ducked and cleared after', () async {
+      final ducking = controller();
+      await ducking.duck(sound: 'A', target: 'Música', reductionDb: 20);
+      expect(memory.saved, {'Música': 0.5});
+      await ducking.release('A');
+      expect(memory.saved, isEmpty);
+    });
+
+    test('failed restore keeps the original and recover() fixes it', () async {
+      final ducking = controller();
+      await ducking.duck(sound: 'A', target: 'Música', reductionDb: 20);
+      offline = true;
+      await expectLater(ducking.release('A'), throwsA(isA<ObsFailure>()));
+      expect(volumes['Música'], closeTo(0.05, 1e-9));
+      expect(ducking.pendingRestores, {'Música'});
+
+      offline = false;
+      await ducking.recover();
+      expect(volumes['Música'], 0.5);
+      expect(ducking.pendingRestores, isEmpty);
+      expect(memory.saved, isEmpty);
+    });
+
+    test(
+      'ducking again while a restore is pending keeps the true original',
+      () async {
+        final ducking = controller();
+        await ducking.duck(sound: 'A', target: 'Música', reductionDb: 20);
+        offline = true;
+        await expectLater(ducking.release('A'), throwsA(isA<ObsFailure>()));
+        offline = false;
+        await ducking.duck(sound: 'B', target: 'Música', reductionDb: 20);
+        await ducking.release('B');
+        expect(volumes['Música'], 0.5);
+      },
+    );
+
+    test('app closed mid-sound: next run restores from memory', () async {
+      await controller().duck(sound: 'A', target: 'Música', reductionDb: 20);
+      // App killed here: no release.
+      final nextRun = controller();
+      expect(nextRun.pendingRestores, {'Música'});
+      await nextRun.recover();
+      expect(volumes['Música'], 0.5);
+      expect(memory.saved, isEmpty);
+    });
+
+    test(
+      'target deleted in OBS is forgotten instead of retried forever',
+      () async {
+        memory = _Memory({'Sumiu': 0.7});
+        final ducking = controller();
+        await ducking.recover();
+        expect(ducking.pendingRestores, isEmpty);
+        expect(memory.saved, isEmpty);
+      },
+    );
   });
 }

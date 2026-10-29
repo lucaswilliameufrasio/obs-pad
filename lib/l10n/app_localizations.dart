@@ -893,7 +893,7 @@ abstract class AppLocalizations {
   /// No description provided for @settingsKeepScreenOnHint.
   ///
   /// In en, this message translates to:
-  /// **'The phone screen will not turn off while OBS Pad is open.'**
+  /// **'The phone screen will not turn off while OBS Pad is open. If the screen turns off or you switch apps, the phone cuts the connection to OBS: running macros and alerts stop until you come back.'**
   String get settingsKeepScreenOnHint;
 
   /// No description provided for @settingsHaptics.
@@ -1805,7 +1805,7 @@ abstract class AppLocalizations {
   /// No description provided for @duckingHelp.
   ///
   /// In en, this message translates to:
-  /// **'E.g. lower the mic or the music, and bring it back when the sound ends.'**
+  /// **'E.g. lower the mic or the music, and bring it back when the sound ends. If the connection drops mid-sound, the volume goes back to normal as soon as OBS Pad reconnects.'**
   String get duckingHelp;
 
   /// No description provided for @duckingTarget.
@@ -1861,6 +1861,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Back here, choose \"Existing source\" and pick the source you created.'**
   String get manualStep6;
+
+  /// No description provided for @metricsForegroundHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Alerts only work while OBS Pad is open with the screen on. With the app closed or in the background, nothing is watching your live.'**
+  String get metricsForegroundHint;
 }
 
 class _AppLocalizationsDelegate

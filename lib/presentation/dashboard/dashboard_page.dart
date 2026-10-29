@@ -193,6 +193,8 @@ class DashboardPage extends ConsumerWidget {
           valueOf: (p) => p.recentDropPct,
           threshold: 1,
         ),
+        const SizedBox(height: 8),
+        HintCard(icon: Icons.info_outline, text: l.metricsForegroundHint),
       ],
     );
   }

@@ -229,7 +229,7 @@
   "settingsLanguage": "Language",
   "languageSystem": "Same as phone",
   "settingsKeepScreenOn": "Keep screen on",
-  "settingsKeepScreenOnHint": "The phone screen will not turn off while OBS Pad is open.",
+  "settingsKeepScreenOnHint": "The phone screen will not turn off while OBS Pad is open. If the screen turns off or you switch apps, the phone cuts the connection to OBS: running macros and alerts stop until you come back.",
   "settingsHaptics": "Vibrate on touch",
   "settingsGuide": "See the setup guide again",
   "obsMockTitle": "WebSocket Server Settings",
@@ -444,7 +444,7 @@
   "soundVolume": "Set volume",
   "soundVolumeKeep": "Keep the volume set in OBS",
   "duckingTitle": "Lower another audio while it plays",
-  "duckingHelp": "E.g. lower the mic or the music, and bring it back when the sound ends.",
+  "duckingHelp": "E.g. lower the mic or the music, and bring it back when the sound ends. If the connection drops mid-sound, the volume goes back to normal as soon as OBS Pad reconnects.",
   "duckingTarget": "Audio to lower",
   "duckingAmount": "Lower by {db} dB",
   "@duckingAmount": {
@@ -460,5 +460,6 @@
   "manualStep3": "Check \"Close file when inactive\" and uncheck \"Restart playback when source becomes active\". Click OK.",
   "manualStep4": "In the Audio Mixer, click ⋮ (or the gear) > Advanced Audio Properties. On the line of your sound, make sure Track 1 is checked.",
   "manualStep5": "Optional: set Audio Monitoring to \"Monitor and Output\" to hear it on your headphones.",
-  "manualStep6": "Back here, choose \"Existing source\" and pick the source you created."
+  "manualStep6": "Back here, choose \"Existing source\" and pick the source you created.",
+  "metricsForegroundHint": "Alerts only work while OBS Pad is open with the screen on. With the app closed or in the background, nothing is watching your live."
 }

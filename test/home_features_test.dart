@@ -10,7 +10,11 @@ import 'fakes/fake_obs_repository.dart';
 import 'helpers.dart';
 
 /// Already configured app: skips the guide and connects to the fake OBS.
-Map<String, Object> configured({List<SoundPad> pads = const []}) => {
+Map<String, Object> configured({
+  List<SoundPad> pads = const [],
+  Map<String, Object> extra = const {},
+}) => {
+  ...extra,
   'onboarding_done': true,
   'connection_profiles_v1': jsonEncode([
     {'id': 'pc', 'name': 'PC da live', 'host': '192.168.0.15', 'port': 4455},
@@ -167,6 +171,23 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.text('TOCANDO'), findsNothing);
     expect(app.repository.volumes['Música'], 0.5);
+  });
+
+  testWidgets('volume left lowered by a closed app is restored on connect', (
+    tester,
+  ) async {
+    final repo = FakeObsRepository()..volumes['Música'] = 0.05;
+    final app = await pumpObsPad(
+      tester,
+      repository: repo,
+      prefs: configured(
+        extra: {
+          'ducking_originals_v1': jsonEncode({'Música': 0.5}),
+        },
+      ),
+    );
+    expect(app.repository.volumes['Música'], 0.5);
+    expect(app.repository.calls, contains('volume Música 0.50'));
   });
 
   testWidgets('panic button stops every sound', (tester) async {

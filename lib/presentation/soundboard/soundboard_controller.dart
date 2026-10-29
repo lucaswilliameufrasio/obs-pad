@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../data/storage/ducking_memory_store.dart';
 import '../../data/storage/layout_store.dart';
 import '../../domain/obs_events.dart';
 import '../../domain/obs_failure.dart';
@@ -139,6 +140,7 @@ class SoundPlayer {
     ducking = DuckingController(
       readVolume: repo.getInputVolume,
       writeVolume: repo.setInputVolume,
+      memory: DuckingMemoryStore(_ref.read(sharedPreferencesProvider)),
     );
   }
 
@@ -147,6 +149,11 @@ class SoundPlayer {
 
   void _ignore(Future<void> future) =>
       unawaited(future.catchError((Object _) {}));
+
+  /// Called on every successful connection: puts back any volume left
+  /// lowered by a sound that was playing when the connection dropped or the
+  /// app was closed.
+  void onConnected() => _ignore(ducking.recover());
 
   void onEvent(ObsEvent event) {
     switch (event) {
@@ -247,6 +254,10 @@ class SoundPlayer {
 final soundPlayerProvider = Provider<SoundPlayer>((ref) {
   final player = SoundPlayer(ref);
   final sub = ref.watch(obsEventsProvider).listen(player.onEvent);
+  ref.listen(connectionStatusProvider, (previous, next) {
+    if (next is ObsConnected && previous is! ObsConnected) player.onConnected();
+  });
+  if (ref.read(connectionStatusProvider) is ObsConnected) player.onConnected();
   ref.onDispose(() {
     unawaited(sub.cancel());
     unawaited(player.ducking.releaseAll().catchError((Object _) {}));

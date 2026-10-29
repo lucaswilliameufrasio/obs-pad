@@ -10,6 +10,7 @@ import '../../l10n/app_localizations.dart';
 import '../dashboard/metrics_controller.dart';
 import '../mixer/mixer_page.dart';
 import '../providers.dart';
+import '../soundboard/soundboard_controller.dart';
 import '../widgets/connection_banner.dart';
 
 /// Bottom navigation + app bar + connection banner around every tab.
@@ -55,6 +56,9 @@ class _HomeShellState extends ConsumerState<HomeShell> {
   @override
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context);
+    // Kept alive app-wide so ducked volumes are restored on reconnect even
+    // when the Sons tab was never opened.
+    ref.watch(soundPlayerProvider);
     ref.listen(
       settingsProvider.select((s) => s.keepScreenOn),
       (_, enabled) => _applyWakelock(enabled),
