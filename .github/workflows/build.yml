@@ -26,7 +26,7 @@ jobs:
       name: ${{ steps.v.outputs.name }}
       number: ${{ steps.v.outputs.number }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - id: v
         run: |
           base=$(sed -n 's/^version: *\([^+]*\).*/\1/p' pubspec.yaml)
@@ -46,15 +46,15 @@ jobs:
     outputs:
       signed: ${{ steps.key.outputs.signed }}
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-java@v4
+      - uses: actions/checkout@v7
+      - uses: actions/setup-java@v6
         with:
           distribution: temurin
           java-version: 17
-      - uses: subosito/flutter-action@v2
+      # Flutter comes from mise.toml.
+      - uses: jdx/mise-action@v5
         with:
-          flutter-version: 3.47.7
-          channel: stable
+          install_args: flutter
           cache: true
       - name: Signing key (falls back to the debug key without the secrets)
         id: key
@@ -80,7 +80,7 @@ jobs:
           --build-name ${{ needs.version.outputs.name }}
           --build-number ${{ needs.version.outputs.number }}
       - run: mv build/app/outputs/flutter-apk/app-release.apk obs-pad-android.apk
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: obs-pad-android
           path: obs-pad-android.apk
@@ -92,17 +92,17 @@ jobs:
       run:
         working-directory: companion
     steps:
-      - uses: actions/checkout@v4
-      - uses: subosito/flutter-action@v2
+      - uses: actions/checkout@v7
+      # Flutter comes from mise.toml.
+      - uses: jdx/mise-action@v5
         with:
-          flutter-version: 3.47.7
-          channel: stable
+          install_args: flutter
           cache: true
       - run: flutter build windows --release --build-number ${{ needs.version.outputs.number }}
       - name: Zip
         shell: pwsh
         run: Compress-Archive -Path build/windows/x64/runner/Release/* -DestinationPath ../obs-pad-desktop-windows.zip
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: obs-pad-desktop-windows
           path: obs-pad-desktop-windows.zip
@@ -114,16 +114,16 @@ jobs:
       run:
         working-directory: companion
     steps:
-      - uses: actions/checkout@v4
-      - uses: subosito/flutter-action@v2
+      - uses: actions/checkout@v7
+      # Flutter comes from mise.toml.
+      - uses: jdx/mise-action@v5
         with:
-          flutter-version: 3.47.7
-          channel: stable
+          install_args: flutter
           cache: true
       - run: flutter build macos --release --build-number ${{ needs.version.outputs.number }}
       - name: Zip
         run: ditto -c -k --keepParent "build/macos/Build/Products/Release/OBS Pad Desktop.app" ../obs-pad-desktop-macos.zip
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: obs-pad-desktop-macos
           path: obs-pad-desktop-macos.zip
@@ -135,18 +135,18 @@ jobs:
       run:
         working-directory: companion
     steps:
-      - uses: actions/checkout@v4
-      - uses: subosito/flutter-action@v2
+      - uses: actions/checkout@v7
+      # Flutter comes from mise.toml.
+      - uses: jdx/mise-action@v5
         with:
-          flutter-version: 3.47.7
-          channel: stable
+          install_args: flutter
           cache: true
       - run: |
           sudo apt-get update
           sudo apt-get install -y clang cmake ninja-build pkg-config libgtk-3-dev
       - run: flutter build linux --release --build-number ${{ needs.version.outputs.number }}
       - run: tar -czf ../obs-pad-desktop-linux.tar.gz -C build/linux/x64/release bundle
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: obs-pad-desktop-linux
           path: obs-pad-desktop-linux.tar.gz
@@ -159,8 +159,8 @@ jobs:
       GH_TOKEN: ${{ github.token }}
       VERSION: ${{ needs.version.outputs.name }}
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/download-artifact@v4
+      - uses: actions/checkout@v7
+      - uses: actions/download-artifact@v8
         with:
           path: dist
           merge-multiple: true

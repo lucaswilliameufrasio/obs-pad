@@ -10,11 +10,10 @@ jobs:
     name: Analyze and test
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: subosito/flutter-action@v2
+      - uses: actions/checkout@v7
+      # Flutter and Go come from mise.toml.
+      - uses: jdx/mise-action@v5
         with:
-          flutter-version: 3.47.7
-          channel: stable
           cache: true
       - name: Phone app
         run: |
@@ -27,9 +26,6 @@ jobs:
           dart pub get
           dart analyze
           dart test
-      - uses: actions/setup-go@v5
-        with:
-          go-version-file: tool/signing-key/go.mod
       - name: Signing key tool
         working-directory: tool/signing-key
         run: |
@@ -47,11 +43,10 @@ jobs:
     name: Tests against a real OBS (Docker)
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: subosito/flutter-action@v2
+      - uses: actions/checkout@v7
+      # Flutter and Go come from mise.toml.
+      - uses: jdx/mise-action@v5
         with:
-          flutter-version: 3.47.7
-          channel: stable
           cache: true
       - name: Linux build tools
         run: |
