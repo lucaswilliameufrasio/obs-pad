@@ -1,5 +1,7 @@
-import 'package:flutter/material.dart';
+import 'package:cupertino_ui/cupertino_ui.dart'
+    show GlobalCupertinoLocalizations;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:material_ui/material_ui.dart';
 
 import 'l10n/app_localizations.dart';
 import 'presentation/providers.dart';
@@ -32,7 +34,11 @@ class ObsPadApp extends ConsumerWidget {
       darkTheme: buildTheme(Brightness.dark),
       themeMode: settings.themeMode,
       locale: settings.locale,
-      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      localizationsDelegates: const [
+        GlobalMaterialLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+        ...AppLocalizations.localizationsDelegates,
+      ],
       supportedLocales: AppLocalizations.supportedLocales,
       routerConfig: ref.watch(routerProvider),
     );

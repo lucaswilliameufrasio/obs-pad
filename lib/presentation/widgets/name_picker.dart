@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// Pick a name that exists in OBS (scene, source, input...). When OBS is not
 /// connected there is nothing to list, so it falls back to typing.

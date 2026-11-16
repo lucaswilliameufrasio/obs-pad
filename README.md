@@ -116,6 +116,29 @@ O app do celular não usa servidor: conversa direto com o OBS e guarda tudo no c
 
 ### Rodar
 
+O `Makefile` reúne os comandos de desenvolvimento, validação e geração de
+artefatos. Execute `make help` para ver a lista completa. Por exemplo:
+
+```bash
+make get
+make devices
+make run                    # escolhe o dispositivo em um menu
+make validate
+make apk-release
+```
+
+`make validate` verifica formatação, análise e testes dos dois aplicativos,
+do pacote compartilhado e da ferramenta de assinatura. O teste com OBS real
+é separado: `make test-real-obs` usa Docker e **remove qualquer container com
+o nome de teste configurado** (`obspad-obs` por padrão). Os builds de desktop
+usam `make build-desktop-linux`, `make build-desktop-macos` ou
+`make build-desktop-windows` no sistema correspondente. Use `ARGS="..."` para
+passar opções aos comandos de execução, build e teste com OBS real.
+Para pular o menu, use `make run DEVICE=<id-do-dispositivo>`.
+
+Esses builds são locais: a publicação continua sendo feita pelo GitHub Actions
+conforme descrito em *Versões e builds automáticos*.
+
 ```bash
 flutter pub get
 flutter run                 # celular conectado por USB ou emulador

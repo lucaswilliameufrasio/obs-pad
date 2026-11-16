@@ -1,8 +1,8 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:obs_pad_companion/obs_pad_companion.dart';
 import 'package:obs_pad_desktop/app.dart';
 import 'package:obs_pad_desktop/desktop_controller.dart';

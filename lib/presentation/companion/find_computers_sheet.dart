@@ -1,5 +1,5 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:obs_pad_companion/obs_pad_companion.dart';
 
 import '../../l10n/app_localizations.dart';

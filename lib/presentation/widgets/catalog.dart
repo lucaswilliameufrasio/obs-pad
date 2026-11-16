@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// Icons users can pick. Kept as a const map (instead of storing code points)
 /// so release builds can tree-shake the icon font.
