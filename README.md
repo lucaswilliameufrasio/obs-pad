@@ -111,7 +111,7 @@ O app do celular não usa servidor: conversa direto com o OBS e guarda tudo no c
 
 ### Requisitos
 
-- Flutter **3.47.7** (stable) / Dart 3.13 — o projeto tem um `mise.toml` fixando a versão.
+- Flutter **3.50.0** (stable) / Dart 3.14 — fixados no `mise.toml`, que o CI também usa (via `jdx/mise-action`), junto com o Go.
 - Android SDK (para APK) e/ou Xcode (para iOS).
 
 ### Rodar
