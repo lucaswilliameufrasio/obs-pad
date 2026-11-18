@@ -8,7 +8,7 @@ ARGS ?=
 .PHONY: help get doctor devices run run-desktop l10n format format-check \
 	analyze test validate test-real-obs apk-debug apk-release appbundle \
 	build-ios build-desktop-linux build-desktop-macos build-desktop-windows \
-	signing-key
+	signing-key install-hooks
 
 help: ## Show available commands
 	@awk 'BEGIN {FS = ":.*## "} /^[a-zA-Z0-9_-]+:.*## / {printf "  %-24s %s\n", $$1, $$2}' $(MAKEFILE_LIST)
@@ -89,3 +89,6 @@ build-desktop-windows: ## Build the Windows desktop app on Windows
 
 signing-key: ## Open the Android test signing key tool
 	mise run chave
+
+install-hooks: ## Activate the repository's tracked Git hooks for this checkout
+	git config --local core.hooksPath .githooks

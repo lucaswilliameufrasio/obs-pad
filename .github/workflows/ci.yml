@@ -6,13 +6,38 @@ on:
   pull_request:
 
 jobs:
+  push-safety:
+    name: Push safety
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+      - name: Validate outgoing commits
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          PUSH_BASE_SHA: ${{ github.event.before }}
+          PUSH_HEAD_SHA: ${{ github.sha }}
+          PULL_REQUEST_BASE_SHA: ${{ github.event.pull_request.base.sha }}
+        run: |
+          if [ "$EVENT_NAME" = "pull_request" ]; then
+            base_sha="$PULL_REQUEST_BASE_SHA"
+          else
+            base_sha="$PUSH_BASE_SHA"
+          fi
+
+          printf 'refs/heads/ci %s refs/heads/base %s\n' "$PUSH_HEAD_SHA" "$base_sha" \
+            | .githooks/pre-push origin
+
   check:
     name: Analyze and test
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       # Flutter and Go come from mise.toml.
-      - uses: jdx/mise-action@v5
+      - uses: jdx/mise-action@236a21c3b91f5db6d4e174b348674a0f0caac06d # v5.2.9
         with:
           cache: true
       - name: Phone app
@@ -43,9 +68,9 @@ jobs:
     name: Tests against a real OBS (Docker)
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       # Flutter and Go come from mise.toml.
-      - uses: jdx/mise-action@v5
+      - uses: jdx/mise-action@236a21c3b91f5db6d4e174b348674a0f0caac06d # v5.2.9
         with:
           cache: true
       - name: Linux build tools

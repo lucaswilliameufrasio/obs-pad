@@ -136,6 +136,19 @@ usam `make build-desktop-linux`, `make build-desktop-macos` ou
 passar opções aos comandos de execução, build e teste com OBS real.
 Para pular o menu, use `make run DEVICE=<id-do-dispositivo>`.
 
+### Hooks do Git
+
+Após clonar o repositório, execute `make install-hooks` para ativar o hook
+rastreado em `.githooks/pre-push` neste checkout. O Git não ativa hooks
+versionados automaticamente. Antes de cada push, ele verifica os commits que
+serão enviados e bloqueia arquivos locais de ambiente, arquivos comuns de
+assinatura, chaves privadas, padrões comuns de credenciais e a inclusão de um
+time pessoal de assinatura iOS no projeto. A mensagem indica o motivo do
+bloqueio. O mesmo hook é executado no CI para pushes na `main` e pull requests,
+mesmo quando a pessoa que contribuiu não o instalou. Essa verificação é uma
+proteção adicional baseada em padrões, não substitui revisão de código nem
+garante detectar todo segredo.
+
 Esses builds são locais: a publicação continua sendo feita pelo GitHub Actions
 conforme descrito em *Versões e builds automáticos*.
 

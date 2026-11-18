@@ -1,0 +1,94 @@
+#!/bin/sh
+
+set -u
+
+remote_name="${1:-unknown}"
+blocked=0
+
+print_block() {
+    printf 'BLOCKED: %s\n' "$1" >&2
+    blocked=1
+}
+
+scan_commit() {
+    commit="$1"
+    changed_files=$(git diff-tree --root --no-commit-id --name-only --diff-filter=AM -r "$commit")
+
+    if [ -z "$changed_files" ]; then
+        return
+    fi
+
+    while IFS= read -r file_path; do
+        case "$file_path" in
+            .env|.env.*|*/.env|*/.env.*)
+                case "$file_path" in
+                    .env.example|.env.template|.env.sample|*/.env.example|*/.env.template|*/.env.sample)
+                        ;;
+                    *)
+                        print_block "Sensitive configuration file '$file_path' is in commit $commit. Keep local environment files out of the public repository."
+                        ;;
+                esac
+                ;;
+            *.p12|*.pfx|*.mobileprovision|*.provisionprofile|*.jks|*.keystore|*.key|*AuthKey_*.p8)
+                print_block "Signing or private-key file '$file_path' is in commit $commit. Signing credentials must stay private."
+                ;;
+        esac
+
+        added_lines=$(git diff-tree --root --no-commit-id -p "$commit" -- "$file_path" | sed -n 's/^+[^+]/&/p')
+
+        if printf '%s\n' "$added_lines" | grep -Eiq 'BEGIN (RSA |EC |OPENSSH |DSA )?PRIVATE KEY'; then
+            print_block "A private key is present in '$file_path' in commit $commit. Remove it and rotate the credential if it was real."
+        fi
+
+        if printf '%s\n' "$added_lines" | grep -Eiq '(gh[pousr]_[A-Za-z0-9_]{20,}|github_pat_[A-Za-z0-9_]{20,}|AKIA[0-9A-Z]{16}|sk_live_[A-Za-z0-9]{16,}|xox[baprs]-[A-Za-z0-9-]{20,})'; then
+            print_block "A credential-like token is present in '$file_path' in commit $commit. Remove it and rotate the credential if it was real."
+        fi
+
+        if printf '%s\n' "$added_lines" | grep -Eiq '(password|passwd|secret|api[_-]?key|access[_-]?token)[[:space:]]*[:=][[:space:]]*["'\'']?[^[:space:]"'\'']{8,}'; then
+            print_block "A value resembling a password, secret, API key, or access token is present in '$file_path' in commit $commit. Review the value and move secrets to a secure store."
+        fi
+
+        case "$file_path" in
+            *.pbxproj)
+                if printf '%s\n' "$added_lines" | grep -Eiq '^[+][[:space:]]*DEVELOPMENT_TEAM[[:space:]]*=[[:space:]]*[A-Z0-9]{10}[[:space:]]*;'; then
+                    print_block "An Apple DEVELOPMENT_TEAM setting is being added to '$file_path' in commit $commit. Keep per-developer signing teams local; this public repository should not publish your team configuration."
+                fi
+                ;;
+        esac
+    done <<EOF
+$changed_files
+EOF
+}
+
+while IFS=' ' read -r local_ref local_sha remote_ref remote_sha; do
+    if [ -z "$local_sha" ] || [ "$local_sha" = "0000000000000000000000000000000000000000" ]; then
+        continue
+    fi
+
+    case "$remote_sha" in
+        *[!0]*)
+            commits=$(git rev-list "$remote_sha..$local_sha" 2>/dev/null) || {
+                print_block "Could not determine commits being pushed to '$remote_ref'. Fetch the remote branch and retry."
+                continue
+            }
+            ;;
+        *)
+            commits=$(git rev-list "$local_sha" --not --remotes="$remote_name" 2>/dev/null) || {
+                print_block "Could not determine commits being pushed to '$remote_ref'. Fetch the remote and retry."
+                continue
+            }
+            ;;
+    esac
+
+    for commit in $commits; do
+        scan_commit "$commit"
+    done
+done
+
+if [ "$blocked" -ne 0 ]; then
+    printf '\nPush cancelled. Fix the listed issue(s), create a corrected commit, then push again.\n' >&2
+    exit 1
+fi
+
+printf 'Pre-push check passed: no blocked signing files or common credential patterns found in the outgoing commits.\n'
+exit 0
